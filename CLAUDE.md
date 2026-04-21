@@ -10,7 +10,7 @@ FairFleet is a **Drone Inspection Report Viewer** mobile app (technical test). T
 
 ## Commands
 
-All commands run from `Fairsight/`:
+**All mobile commands must be run from `Fairsight/`** — the repo root has no `package.json`, so npm will fail if you don't `cd Fairsight/` first.
 
 ```bash
 # Dev server
