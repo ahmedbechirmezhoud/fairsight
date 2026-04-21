@@ -109,5 +109,10 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "reanimated": {
+    "staticFeatureFlags": {
+      "ENABLE_SHARED_ELEMENT_TRANSITIONS": true
+    }
   }
 }
