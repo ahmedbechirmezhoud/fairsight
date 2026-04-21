@@ -3,6 +3,13 @@
 
 import { Platform } from "react-native"
 import {
+  Poppins_300Light as poppinsLight,
+  Poppins_400Regular as poppinsRegular,
+  Poppins_500Medium as poppinsMedium,
+  Poppins_600SemiBold as poppinsSemiBold,
+  Poppins_700Bold as poppinsBold,
+} from "@expo-google-fonts/poppins"
+import {
   SpaceGrotesk_300Light as spaceGroteskLight,
   SpaceGrotesk_400Regular as spaceGroteskRegular,
   SpaceGrotesk_500Medium as spaceGroteskMedium,
@@ -16,9 +23,22 @@ export const customFontsToLoad = {
   spaceGroteskMedium,
   spaceGroteskSemiBold,
   spaceGroteskBold,
+  poppinsLight,
+  poppinsRegular,
+  poppinsMedium,
+  poppinsSemiBold,
+  poppinsBold,
 }
 
 const fonts = {
+  poppins: {
+    // Cross-platform Google font.
+    light: "poppinsLight",
+    normal: "poppinsRegular",
+    medium: "poppinsMedium",
+    semiBold: "poppinsSemiBold",
+    bold: "poppinsBold",
+  },
   spaceGrotesk: {
     // Cross-platform Google font.
     light: "spaceGroteskLight",
@@ -59,7 +79,7 @@ export const typography = {
   /**
    * The primary font. Used in most places.
    */
-  primary: fonts.spaceGrotesk,
+  primary: fonts.poppins,
   /**
    * An alternate font used for perhaps titles and stuff.
    */
