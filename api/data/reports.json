@@ -1,0 +1,486 @@
+[
+  {
+    "id": "rpt_001",
+    "title": "Facade Inspection - Arkadien Residence Building A",
+    "date": "2022-09-23",
+    "status": "completed",
+    "location": "Dornstadt, Germany",
+    "inspection_type": "facade",
+    "thumbnail": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0010.JPG",
+    "description": "Comprehensive facade inspection of Building A at the Arkadien residential complex. Drone-based visual assessment of exterior walls, balconies, and cladding. Multiple soiling issues and scaffolding anchor defects identified across the south and west facades.",
+    "client": "Arkadien Wohnbau GmbH",
+    "inspector": "Gerd Maurer Prof Dr",
+    "coordinates": {
+      "latitude": 48.4730230,
+      "longitude": 9.9389626
+    },
+    "area_sqm": 3200.0,
+    "weather": {
+      "temperature_c": 18.5,
+      "wind_speed_kmh": 12.0,
+      "conditions": "partly cloudy"
+    },
+    "drone": {
+      "model": "DJI Matrice 300 RTK + L1D-20c",
+      "flight_altitude_m": 25.0,
+      "flight_duration_min": 42
+    },
+    "issues": [
+      {
+        "id": "iss_001_a",
+        "severity": "critical",
+        "category": "missing_object",
+        "description": "Missing balcony glass panel - potential safety hazard for residents",
+        "image_ref": "img_001_04",
+        "location_on_site": "South facade, 3rd floor, Balcony unit 7"
+      },
+      {
+        "id": "iss_001_b",
+        "severity": "critical",
+        "category": "missing_object",
+        "description": "Missing balcony railing element - fall protection compromised",
+        "image_ref": "img_001_05",
+        "location_on_site": "South facade, 2nd floor, Balcony unit 4"
+      },
+      {
+        "id": "iss_001_c",
+        "severity": "warning",
+        "category": "soiling",
+        "description": "Scaffolding anchor point not properly sealed - visible staining and color mismatch on facade",
+        "image_ref": "img_001_01",
+        "location_on_site": "West facade, 4th floor, Section B2"
+      },
+      {
+        "id": "iss_001_d",
+        "severity": "warning",
+        "category": "soiling",
+        "description": "Multiple scaffolding anchor marks with paint defects across facade section",
+        "image_ref": "img_001_02",
+        "location_on_site": "West facade, 3rd floor, Section B1"
+      },
+      {
+        "id": "iss_001_e",
+        "severity": "warning",
+        "category": "damage",
+        "description": "Defect in WDVS (external thermal insulation) - surface damage visible",
+        "image_ref": "img_001_06",
+        "location_on_site": "South facade, 1st floor, near entrance"
+      },
+      {
+        "id": "iss_001_f",
+        "severity": "info",
+        "category": "soiling",
+        "description": "Minor discoloration near window frame - cosmetic only",
+        "image_ref": "img_001_03",
+        "location_on_site": "West facade, 2nd floor, Window W12"
+      }
+    ],
+    "images": [
+      {
+        "id": "img_001_01",
+        "filename": "FF11834_2022-09-23_DJI_0010.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0010.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:17:46Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_c"]
+      },
+      {
+        "id": "img_001_02",
+        "filename": "FF11834_2022-09-23_DJI_0011.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0011.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:17:48Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_d"]
+      },
+      {
+        "id": "img_001_03",
+        "filename": "FF11834_2022-09-23_DJI_0025.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0025.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:18:16Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_f"]
+      },
+      {
+        "id": "img_001_04",
+        "filename": "FF11834_2022-09-23_DJI_0034.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0034.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:18:34Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_a"]
+      },
+      {
+        "id": "img_001_05",
+        "filename": "FF11834_2022-09-23_DJI_0036.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0036.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:18:38Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_b"]
+      },
+      {
+        "id": "img_001_06",
+        "filename": "FF11834_2022-09-23_DJI_0037.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0037.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:18:40Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_001_e"]
+      }
+    ]
+  },
+  {
+    "id": "rpt_002",
+    "title": "Facade Inspection - Arkadien Residence Building B",
+    "date": "2022-09-23",
+    "status": "completed",
+    "location": "Dornstadt, Germany",
+    "inspection_type": "facade",
+    "thumbnail": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0068.JPG",
+    "description": "Facade inspection of Building B, focusing on the north and east-facing exterior walls. Several scaffolding-related soiling issues found. Rainwater pipe penetration rosettes missing on multiple floors.",
+    "client": "Arkadien Wohnbau GmbH",
+    "inspector": "Gerd Maurer Prof Dr",
+    "coordinates": {
+      "latitude": 48.4731585,
+      "longitude": 9.9385920
+    },
+    "area_sqm": 2800.0,
+    "weather": {
+      "temperature_c": 18.5,
+      "wind_speed_kmh": 12.0,
+      "conditions": "partly cloudy"
+    },
+    "drone": {
+      "model": "DJI Matrice 300 RTK + L1D-20c",
+      "flight_altitude_m": 25.0,
+      "flight_duration_min": 38
+    },
+    "issues": [
+      {
+        "id": "iss_002_a",
+        "severity": "warning",
+        "category": "missing_object",
+        "description": "Pipe welding recesses not completed - openings left unsealed in facade",
+        "image_ref": "img_002_01",
+        "location_on_site": "North facade, 2nd floor, Pipe section P3"
+      },
+      {
+        "id": "iss_002_b",
+        "severity": "warning",
+        "category": "missing_object",
+        "description": "Missing rosette cover for rainwater pipe penetration",
+        "image_ref": "img_002_02",
+        "location_on_site": "North facade, 3rd floor, Downpipe D2"
+      },
+      {
+        "id": "iss_002_c",
+        "severity": "warning",
+        "category": "soiling",
+        "description": "Scaffolding anchor not properly closed - visible surface damage",
+        "image_ref": "img_002_03",
+        "location_on_site": "East facade, 4th floor, Section C1"
+      },
+      {
+        "id": "iss_002_d",
+        "severity": "info",
+        "category": "soiling",
+        "description": "Minor scaffolding mark - cosmetic defect only",
+        "image_ref": "img_002_04",
+        "location_on_site": "East facade, 3rd floor, Section C2"
+      }
+    ],
+    "images": [
+      {
+        "id": "img_002_01",
+        "filename": "FF11834_2022-09-23_DJI_0068.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0068.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:29:37Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_002_a"]
+      },
+      {
+        "id": "img_002_02",
+        "filename": "FF11834_2022-09-23_DJI_0072.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0072.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:29:58Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_002_b"]
+      },
+      {
+        "id": "img_002_03",
+        "filename": "FF11834_2022-09-23_DJI_0071.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0071.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:29:52Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_002_c"]
+      },
+      {
+        "id": "img_002_04",
+        "filename": "FF11834_2022-09-23_DJI_0073.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0073.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:30:09Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_002_d"]
+      },
+      {
+        "id": "img_002_05",
+        "filename": "FF11834_2022-09-23_DJI_0075.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0075.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:30:31Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_002_06",
+        "filename": "FF11834_2022-09-23_DJI_0076.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0076.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:30:35Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      }
+    ]
+  },
+  {
+    "id": "rpt_003",
+    "title": "Facade Inspection - Arkadien Commercial Wing",
+    "date": "2022-09-23",
+    "status": "pending_review",
+    "location": "Dornstadt, Germany",
+    "inspection_type": "facade",
+    "thumbnail": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0079.JPG",
+    "description": "Inspection of the commercial wing facade at the Arkadien complex. Drone imagery captured at multiple altitudes for detailed assessment. Preliminary analysis shows several soiling and damage issues requiring further expert review.",
+    "client": "Arkadien Wohnbau GmbH",
+    "inspector": "Gerd Maurer Prof Dr",
+    "coordinates": {
+      "latitude": 48.4731547,
+      "longitude": 9.9386034
+    },
+    "area_sqm": 1800.0,
+    "weather": {
+      "temperature_c": 19.0,
+      "wind_speed_kmh": 10.0,
+      "conditions": "clear"
+    },
+    "drone": {
+      "model": "DJI Matrice 300 RTK + L1D-20c",
+      "flight_altitude_m": 20.0,
+      "flight_duration_min": 28
+    },
+    "issues": [
+      {
+        "id": "iss_003_a",
+        "severity": "warning",
+        "category": "soiling",
+        "description": "Large area of facade discoloration - suspected water ingress staining",
+        "image_ref": "img_003_02",
+        "location_on_site": "West facade, ground floor, Section A1"
+      },
+      {
+        "id": "iss_003_b",
+        "severity": "warning",
+        "category": "damage",
+        "description": "Surface cracks visible in render near window junction",
+        "image_ref": "img_003_03",
+        "location_on_site": "West facade, 2nd floor, Window W8"
+      },
+      {
+        "id": "iss_003_c",
+        "severity": "info",
+        "category": "soiling",
+        "description": "Minor algae growth on north-facing wall section",
+        "image_ref": "img_003_04",
+        "location_on_site": "North facade, 1st floor, Section D2"
+      }
+    ],
+    "images": [
+      {
+        "id": "img_003_01",
+        "filename": "FF11834_2022-09-23_DJI_0079.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0079.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:30:49Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_003_02",
+        "filename": "FF11834_2022-09-23_DJI_0084.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0084.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:31:18Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_003_a"]
+      },
+      {
+        "id": "img_003_03",
+        "filename": "FF11834_2022-09-23_DJI_0087.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0087.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:31:46Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_003_b"]
+      },
+      {
+        "id": "img_003_04",
+        "filename": "FF11834_2022-09-23_DJI_0091.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0091.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:32:04Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_003_c"]
+      },
+      {
+        "id": "img_003_05",
+        "filename": "FF11834_2022-09-23_DJI_0093.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0093.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:32:13Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      }
+    ]
+  },
+  {
+    "id": "rpt_004",
+    "title": "Rooftop & Upper Facade - Arkadien Tower Section",
+    "date": "2022-09-23",
+    "status": "in_progress",
+    "location": "Dornstadt, Germany",
+    "inspection_type": "rooftop",
+    "thumbnail": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0103.JPG",
+    "description": "High-altitude drone inspection of the tower section rooftop and upper facade levels. Captured from 14-18m relative altitude. Analysis currently in progress - initial findings suggest general good condition with minor cosmetic issues.",
+    "client": "Arkadien Wohnbau GmbH",
+    "inspector": "Gerd Maurer Prof Dr",
+    "coordinates": {
+      "latitude": 48.4731593,
+      "longitude": 9.9387495
+    },
+    "area_sqm": 950.0,
+    "weather": {
+      "temperature_c": 19.0,
+      "wind_speed_kmh": 14.0,
+      "conditions": "partly cloudy"
+    },
+    "drone": {
+      "model": "DJI Matrice 300 RTK + L1D-20c",
+      "flight_altitude_m": 30.0,
+      "flight_duration_min": 22
+    },
+    "issues": [
+      {
+        "id": "iss_004_a",
+        "severity": "warning",
+        "category": "damage",
+        "description": "Possible membrane lifting on flat roof section near parapet edge",
+        "image_ref": "img_004_02",
+        "location_on_site": "Rooftop, southeast corner"
+      },
+      {
+        "id": "iss_004_b",
+        "severity": "info",
+        "category": "soiling",
+        "description": "Accumulated debris near roof drainage - maintenance recommended",
+        "image_ref": "img_004_03",
+        "location_on_site": "Rooftop, central drainage gutter"
+      }
+    ],
+    "images": [
+      {
+        "id": "img_004_01",
+        "filename": "FF11834_2022-09-23_DJI_0098.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0098.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T16:33:10Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_004_02",
+        "filename": "FF11834_2022-09-23_DJI_0103.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0103.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:33:44Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_004_a"]
+      },
+      {
+        "id": "img_004_03",
+        "filename": "FF11834_2022-09-23_DJI_0102.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0102.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:33:25Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": ["iss_004_b"]
+      },
+      {
+        "id": "img_004_04",
+        "filename": "FF11834_2022-09-23_DJI_0107.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0107.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:34:12Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_004_05",
+        "filename": "FF11834_2022-09-23_DJI_0105.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0105.JPG",
+        "type": "overview",
+        "captured_at": "2022-09-23T16:33:55Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_004_06",
+        "filename": "FF11834_2022-09-23_DJI_0056.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0056.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:21:11Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      },
+      {
+        "id": "img_004_07",
+        "filename": "FF11834_2022-09-23_DJI_0057.JPG",
+        "url": "http://localhost:3000/images/FF11834_2022-09-23_DJI_0057.JPG",
+        "type": "rgb",
+        "captured_at": "2022-09-23T17:21:13Z",
+        "width": 5472,
+        "height": 3648,
+        "issue_refs": []
+      }
+    ]
+  }
+]

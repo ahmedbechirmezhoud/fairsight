@@ -1,0 +1,225 @@
+openapi: "3.0.3"
+info:
+  title: FairFleet Drone Inspection API (Mock)
+  description: Mock API for the mobile developer technical test
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:3000
+    description: Local mock server
+
+paths:
+  /api/reports:
+    get:
+      summary: List inspection reports
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [completed, in_progress, pending_review]
+          description: Filter by report status
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by title or location (case-insensitive)
+      responses:
+        "200":
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reports:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReportSummary"
+                  total:
+                    type: integer
+
+  /api/reports/{id}:
+    get:
+      summary: Get report details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Full report details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportDetail"
+        "404":
+          description: Report not found
+
+  /api/reports/{id}/images:
+    get:
+      summary: Get images for a report
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of images
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Image"
+        "404":
+          description: Report not found
+
+  /images/{filename}:
+    get:
+      summary: Serve a static image file
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Image file
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+
+components:
+  schemas:
+    ReportSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "rpt_001"
+        title:
+          type: string
+          example: "Facade Inspection - Arkadien Residence Building A"
+        date:
+          type: string
+          format: date
+          example: "2022-09-23"
+        status:
+          type: string
+          enum: [completed, in_progress, pending_review]
+        location:
+          type: string
+          example: "Dornstadt, Germany"
+        thumbnail:
+          type: string
+          example: "http://localhost:3000/images/FF11834_2022-09-23_DJI_0010.JPG"
+        inspection_type:
+          type: string
+          enum: [solar_panel, rooftop, facade, infrastructure]
+        issues_count:
+          type: integer
+          example: 6
+
+    ReportDetail:
+      allOf:
+        - $ref: "#/components/schemas/ReportSummary"
+        - type: object
+          properties:
+            description:
+              type: string
+            client:
+              type: string
+              example: "Arkadien Wohnbau GmbH"
+            inspector:
+              type: string
+              example: "Gerd Maurer Prof Dr"
+            coordinates:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                  example: 48.4730230
+                longitude:
+                  type: number
+                  example: 9.9389626
+            area_sqm:
+              type: number
+              example: 3200.0
+            issues:
+              type: array
+              items:
+                $ref: "#/components/schemas/Issue"
+            weather:
+              type: object
+              properties:
+                temperature_c:
+                  type: number
+                wind_speed_kmh:
+                  type: number
+                conditions:
+                  type: string
+            drone:
+              type: object
+              properties:
+                model:
+                  type: string
+                flight_altitude_m:
+                  type: number
+                flight_duration_min:
+                  type: number
+
+    Issue:
+      type: object
+      properties:
+        id:
+          type: string
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        category:
+          type: string
+          example: "soiling"
+        description:
+          type: string
+        image_ref:
+          type: string
+          description: Reference to the image showing this issue
+        location_on_site:
+          type: string
+          example: "West facade, 4th floor, Section B2"
+
+    Image:
+      type: object
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        url:
+          type: string
+        type:
+          type: string
+          enum: [thermal, rgb, overview]
+        captured_at:
+          type: string
+          format: date-time
+        width:
+          type: integer
+        height:
+          type: integer
+        issue_refs:
+          type: array
+          items:
+            type: string
+          description: IDs of issues visible in this image
