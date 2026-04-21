@@ -12,16 +12,14 @@ import type { ReportSummary } from "@/types/api"
 
 interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
 
-export const HomeScreen: FC<HomeScreenProps> = function HomeScreen(_props) {
+export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation }) {
   const { themed, theme } = useAppTheme()
   const { data, isLoading, isError, refetch, isFetching } = useReports()
 
   const reports = data?.reports ?? []
 
   function handlePressReport(report: ReportSummary) {
-    // navigation.navigate("ReportDetail", { id: report.id })
-    // Wired when ReportDetail screen exists
-    void report
+    navigation.navigate("ReportDetail", { id: report.id })
   }
 
   function renderEmptyState() {
