@@ -1,7 +1,7 @@
 import { FC } from "react"
-import { ActivityIndicator, FlatList, TextStyle, View, ViewStyle } from "react-native"
+import { FlatList, TextStyle, View, ViewStyle } from "react-native"
 
-import { ReportCard } from "@/components/report"
+import { ReportCard, ReportCardSkeleton } from "@/components/report"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
@@ -10,27 +10,21 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
 
+const SKELETON_KEYS = ["s1", "s2", "s3", "s4"]
+
 interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation }) {
-  const { themed, theme } = useAppTheme()
+  const { themed } = useAppTheme()
   const { data, isLoading, isError, refetch, isFetching } = useReports()
 
   const reports = data?.reports ?? []
 
   function handlePressReport(report: ReportSummary) {
-    navigation.navigate("ReportDetail", { id: report.id })
+    navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
   }
 
   function renderEmptyState() {
-    if (isLoading) {
-      return (
-        <View style={$centered}>
-          <ActivityIndicator size="large" color={theme.colors.text} />
-        </View>
-      )
-    }
-
     if (isError) {
       return (
         <View style={[$centered, themed($stateContainer)]}>
@@ -74,18 +68,28 @@ export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation 
       </View>
 
       {/* List */}
-      <FlatList
-        data={reports}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ReportCard report={item} onPress={handlePressReport} />}
-        // Heights vary (title can wrap) — getItemLayout omitted intentionally
-        contentContainerStyle={themed($listContent)}
-        ItemSeparatorComponent={() => <View style={themed($separator)} />}
-        ListEmptyComponent={renderEmptyState}
-        refreshing={isFetching && !isLoading}
-        onRefresh={refetch}
-        showsVerticalScrollIndicator={false}
-      />
+      {isLoading ? (
+        <View style={themed($listContent)}>
+          {SKELETON_KEYS.map((key, i) => (
+            <View key={key}>
+              <ReportCardSkeleton />
+              {i < SKELETON_KEYS.length - 1 && <View style={themed($separator)} />}
+            </View>
+          ))}
+        </View>
+      ) : (
+        <FlatList
+          data={reports}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <ReportCard report={item} onPress={handlePressReport} />}
+          contentContainerStyle={themed($listContent)}
+          ItemSeparatorComponent={() => <View style={themed($separator)} />}
+          ListEmptyComponent={renderEmptyState}
+          refreshing={isFetching}
+          onRefresh={refetch}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </Screen>
   )
 }

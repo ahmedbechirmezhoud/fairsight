@@ -25,7 +25,11 @@ export function ReportCard({ report, onPress }: ReportCardProps) {
       accessibilityLabel={`Open report: ${report.title}`}
       accessibilityHint="Opens the full inspection report"
     >
-      <ReportThumbnail uri={report.thumbnail} roundedTop />
+      <ReportThumbnail
+        uri={report.thumbnail}
+        roundedTop
+        sharedTransitionTag={`thumbnail-${report.id}`}
+      />
       <ReportCardHeader
         title={report.title}
         status={report.status}

@@ -1,11 +1,20 @@
 import { FC } from "react"
-import { ActivityIndicator, Image, Pressable, TextStyle, View, ViewStyle } from "react-native"
+import { Pressable, TextStyle, View, ViewStyle } from "react-native"
+import Animated from "react-native-reanimated"
 
 import { ContextSection } from "@/components/report/ContextSection"
 import { DetailsSection } from "@/components/report/DetailsSection"
 import { FlightSection } from "@/components/report/FlightSection"
 import { ImagesGallery } from "@/components/report/ImagesGallery"
 import { IssuesList } from "@/components/report/IssuesList"
+import {
+  ContextSectionSkeleton,
+  DetailsSectionSkeleton,
+  FlightSectionSkeleton,
+  ImagesSectionSkeleton,
+  IssuesSectionSkeleton,
+  ReportDetailHeaderSkeleton,
+} from "@/components/report/ReportDetailSkeleton"
 import { StatusBadge } from "@/components/report/StatusBadge"
 import { TypeBadge } from "@/components/report/TypeBadge"
 import { Screen } from "@/components/Screen"
@@ -24,13 +33,8 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
   navigation,
   route,
 }) {
-  const { id } = route.params
-  const {
-    themed,
-    theme: {
-      colors: { text: textColor, textSubtle },
-    },
-  } = useAppTheme()
+  const { id, thumbnail } = route.params
+  const { themed } = useAppTheme()
 
   const {
     data: report,
@@ -42,19 +46,8 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
   const { data: imagesData, isLoading: imagesLoading } = useReportImages(id)
   const images = imagesData?.images ?? []
 
-  // — Loading state —
-  if (reportLoading) {
-    return (
-      <Screen preset="fixed" safeAreaEdges={["top"]} style={themed($screen)}>
-        <View style={$centered}>
-          <ActivityIndicator size="large" color={textColor} />
-        </View>
-      </Screen>
-    )
-  }
-
-  // — Error state —
-  if (reportError || !report) {
+  // — Error state — (full-screen, no content to show)
+  if (reportError && !report) {
     return (
       <Screen preset="fixed" safeAreaEdges={["top"]} style={themed($screen)}>
         <View style={[$centered, themed($stateContainer)]}>
@@ -84,16 +77,16 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
       contentContainerStyle={themed($scrollContent)}
       style={themed($screen)}
     >
-      {/* — Hero — */}
+      {/* — Hero — always renders with thumbnail from nav params — */}
       <View style={$heroWrapper}>
-        <Image
-          source={{ uri: report.thumbnail }}
+        <Animated.Image
+          source={{ uri: thumbnail }}
           style={[$hero, { height: HERO_HEIGHT }]}
           resizeMode="cover"
           accessibilityRole="image"
-          accessibilityLabel={`Thumbnail for ${report.title}`}
+          accessibilityLabel={report ? `Thumbnail for ${report.title}` : "Report thumbnail"}
+          sharedTransitionTag={`thumbnail-${id}`}
         />
-        {/* Back button overlay */}
         <Pressable
           style={themed($backButton)}
           onPress={() => navigation.goBack()}
@@ -106,64 +99,96 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
       </View>
 
       {/* — Header block — */}
-      <View style={themed($headerBlock)}>
-        <View style={$badgeRow}>
-          <StatusBadge status={report.status} />
-          <TypeBadge type={report.inspection_type} />
-        </View>
-        <Text size="xl" weight="bold" style={themed($title)}>
-          {report.title}
-        </Text>
-        <Text size="xs" style={themed($date)}>
-          {formatReportDate(report.date)}
-        </Text>
-      </View>
+      {reportLoading ? (
+        <ReportDetailHeaderSkeleton />
+      ) : (
+        report && (
+          <View style={themed($headerBlock)}>
+            <View style={$badgeRow}>
+              <StatusBadge status={report.status} />
+              <TypeBadge type={report.inspection_type} />
+            </View>
+            <Text size="xl" weight="bold" style={themed($title)}>
+              {report.title}
+            </Text>
+            <Text size="xs" style={themed($date)}>
+              {formatReportDate(report.date)}
+            </Text>
+          </View>
+        )
+      )}
 
       {/* — Content sections — */}
       <View style={themed($sections)}>
-        <DetailsSection
-          description={report.description}
-          client={report.client}
-          inspector={report.inspector}
-        />
+        {/* Details */}
+        {reportLoading ? (
+          <DetailsSectionSkeleton />
+        ) : (
+          report && (
+            <DetailsSection
+              description={report.description}
+              client={report.client}
+              inspector={report.inspector}
+            />
+          )
+        )}
 
         <View style={themed($divider)} />
 
-        <ContextSection
-          latitude={report.coordinates.latitude}
-          longitude={report.coordinates.longitude}
-          location={report.location}
-          temperature_c={report.weather.temperature_c}
-          wind_speed_kmh={report.weather.wind_speed_kmh}
-          conditions={report.weather.conditions}
-          area_sqm={report.area_sqm}
-        />
+        {/* Context */}
+        {reportLoading ? (
+          <ContextSectionSkeleton />
+        ) : (
+          report && (
+            <ContextSection
+              latitude={report.coordinates.latitude}
+              longitude={report.coordinates.longitude}
+              location={report.location}
+              temperature_c={report.weather.temperature_c}
+              wind_speed_kmh={report.weather.wind_speed_kmh}
+              conditions={report.weather.conditions}
+              area_sqm={report.area_sqm}
+            />
+          )
+        )}
 
         <View style={themed($divider)} />
 
-        <FlightSection
-          model={report.drone.model}
-          flight_altitude_m={report.drone.flight_altitude_m}
-          flight_duration_min={report.drone.flight_duration_min}
-        />
+        {/* Flight */}
+        {reportLoading ? (
+          <FlightSectionSkeleton />
+        ) : (
+          report && (
+            <FlightSection
+              model={report.drone.model}
+              flight_altitude_m={report.drone.flight_altitude_m}
+              flight_duration_min={report.drone.flight_duration_min}
+            />
+          )
+        )}
 
         <View style={themed($divider)} />
 
-        {/* Images section — independent loading state */}
-        <View style={themed($gallerySection)}>
-          <Text size="xxs" weight="semiBold" style={themed($sectionTitle)}>
-            IMAGES
-          </Text>
-          {imagesLoading ? (
-            <ActivityIndicator size="small" color={textSubtle} />
-          ) : (
+        {/* Images */}
+        {imagesLoading ? (
+          <ImagesSectionSkeleton />
+        ) : (
+          <View style={themed($gallerySection)}>
+            <Text size="xxs" weight="semiBold" style={themed($sectionTitle)}>
+              IMAGES
+            </Text>
             <ImagesGallery images={images} />
-          )}
-        </View>
+          </View>
+        )}
 
         <View style={themed($divider)} />
 
-        <IssuesList issues={report.issues} />
+        {/* Issues */}
+        {reportLoading ? (
+          <IssuesSectionSkeleton />
+        ) : (
+          report && <IssuesList issues={report.issues} />
+        )}
       </View>
     </Screen>
   )

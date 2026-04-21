@@ -1,4 +1,5 @@
-import { Image, ImageStyle, View, ViewStyle } from "react-native"
+import { ImageStyle, View, ViewStyle } from "react-native"
+import Animated from "react-native-reanimated"
 
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -9,19 +10,25 @@ interface ReportThumbnailProps {
   uri: string
   /** Radius applied to top corners only (card context). Pass false for square. */
   roundedTop?: boolean
+  sharedTransitionTag?: string
 }
 
-export function ReportThumbnail({ uri, roundedTop = true }: ReportThumbnailProps) {
+export function ReportThumbnail({
+  uri,
+  roundedTop = true,
+  sharedTransitionTag,
+}: ReportThumbnailProps) {
   const { themed } = useAppTheme()
 
   return (
     <View style={themed(roundedTop ? $containerRounded : $container)}>
-      <Image
+      <Animated.Image
         source={{ uri }}
         style={$image}
         resizeMode="cover"
         accessibilityRole="image"
         accessibilityLabel="Report thumbnail"
+        sharedTransitionTag={sharedTransitionTag}
       />
     </View>
   )
