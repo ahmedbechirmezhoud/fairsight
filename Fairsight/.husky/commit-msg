@@ -1,1 +1,1 @@
-cd Fairsight && npm run commitlint -- "$1"
+ROOT=$(pwd) && cd Fairsight && npm run commitlint -- "$ROOT/$1"
