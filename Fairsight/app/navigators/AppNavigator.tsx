@@ -6,6 +6,7 @@
  */
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import Config from "@/config"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
@@ -20,6 +21,16 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
  * is pressed while in that screen. Only affects Android.
  */
 const exitRoutes = Config.exitRoutes
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 5 * 60_000,
+      retry: 2,
+    },
+  },
+})
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
@@ -52,10 +63,12 @@ export const AppNavigator = (props: NavigationProps) => {
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   return (
-    <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
-      <ErrorBoundary catchErrors={Config.catchErrors}>
-        <AppStack />
-      </ErrorBoundary>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
+        <ErrorBoundary catchErrors={Config.catchErrors}>
+          <AppStack />
+        </ErrorBoundary>
+      </NavigationContainer>
+    </QueryClientProvider>
   )
 }
