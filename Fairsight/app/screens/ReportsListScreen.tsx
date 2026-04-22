@@ -1,10 +1,10 @@
 import { FC } from "react"
-import { FlatList, TextStyle, View, ViewStyle } from "react-native"
+import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from "react-native"
 
 import { ReportCard, ReportCardSkeleton } from "@/components/report"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import type { AppStackScreenProps } from "@/navigators/navigationTypes"
+import type { ReportsTabScreenProps } from "@/navigators/navigationTypes"
 import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -12,10 +12,12 @@ import type { ReportSummary } from "@/types/api"
 
 const SKELETON_KEYS = ["s1", "s2", "s3", "s4"]
 
-interface HomeScreenProps extends AppStackScreenProps<"ReportsTabs"> {}
+interface ReportsListScreenProps extends ReportsTabScreenProps<"ReportsList"> {}
 
-export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation }) {
-  const { themed } = useAppTheme()
+export const ReportsListScreen: FC<ReportsListScreenProps> = function ReportsListScreen({
+  navigation,
+}) {
+  const { themed, theme } = useAppTheme()
   const { data, isLoading, isError, refetch, isFetching } = useReports()
   const reports = data?.reports ?? []
 
@@ -39,7 +41,6 @@ export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation 
         </View>
       )
     }
-
     return (
       <View style={[$centered, themed($stateContainer)]}>
         <Text size="lg" weight="semiBold" style={themed($stateTitle)}>
@@ -53,12 +54,7 @@ export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation 
   }
 
   return (
-    <Screen
-      preset="fixed"
-      safeAreaEdges={["top"]}
-      style={themed($screen)}
-      contentContainerStyle={$fill}
-    >
+    <Screen preset="fixed" safeAreaEdges={[]} style={themed($screen)} contentContainerStyle={$fill}>
       {isLoading ? (
         <View style={themed($listContent)}>
           {SKELETON_KEYS.map((key, i) => (
@@ -76,8 +72,16 @@ export const HomeScreen: FC<HomeScreenProps> = function HomeScreen({ navigation 
           contentContainerStyle={themed($listContent)}
           ItemSeparatorComponent={() => <View style={themed($separator)} />}
           ListEmptyComponent={renderEmptyState}
-          refreshing={isFetching}
-          onRefresh={refetch}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={refetch}
+              tintColor={theme.colors.text}
+              colors={[theme.colors.text]}
+              title=""
+              titleColor={theme.colors.text}
+            />
+          }
           showsVerticalScrollIndicator={false}
         />
       )}

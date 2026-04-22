@@ -1,5 +1,5 @@
-import { FC } from "react"
-import { Pressable, TextStyle, View, ViewStyle } from "react-native"
+import { FC, useLayoutEffect } from "react"
+import { TextStyle, View, ViewStyle } from "react-native"
 import Animated from "react-native-reanimated"
 
 import { ContextSection } from "@/components/report/ContextSection"
@@ -46,10 +46,16 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
   const { data: imagesData, isLoading: imagesLoading } = useReportImages(id)
   const images = imagesData?.images ?? []
 
+  useLayoutEffect(() => {
+    if (report?.title) {
+      navigation.setOptions({ headerTitle: report.title })
+    }
+  }, [navigation, report?.title])
+
   // — Error state — (full-screen, no content to show)
   if (reportError && !report) {
     return (
-      <Screen preset="fixed" safeAreaEdges={["top"]} style={themed($screen)}>
+      <Screen preset="fixed" safeAreaEdges={[]} style={themed($screen)}>
         <View style={[$centered, themed($stateContainer)]}>
           <Text size="lg" weight="semiBold" style={themed($stateTitle)}>
             Could not load report
@@ -87,15 +93,6 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
           accessibilityLabel={report ? `Thumbnail for ${report.title}` : "Report thumbnail"}
           sharedTransitionTag={`thumbnail-${id}`}
         />
-        <Pressable
-          style={themed($backButton)}
-          onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          hitSlop={12}
-        >
-          <Text style={themed($backIcon)}>‹</Text>
-        </Pressable>
       </View>
 
       {/* — Header block — */}
@@ -210,26 +207,6 @@ const $heroWrapper: ViewStyle = {
 const $hero = {
   width: "100%" as const,
 }
-
-const $backButton: ThemedStyle<ViewStyle> = ({ colors, radius }) => ({
-  position: "absolute",
-  top: 48,
-  left: 16,
-  borderRadius: radius.full,
-  width: 36,
-  height: 36,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: colors.palette.overlay50,
-})
-
-const $backIcon: ThemedStyle<TextStyle> = ({ colors }) => ({
-  fontSize: 26,
-  fontWeight: "300",
-  lineHeight: 30,
-  marginTop: -2,
-  color: colors.palette.neutral100,
-})
 
 const $headerBlock: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,

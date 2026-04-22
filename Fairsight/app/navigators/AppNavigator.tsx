@@ -1,27 +1,17 @@
-/**
- * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
- * navigation flows of your app.
- * Generally speaking, it will contain an auth flow (registration, login, forgot password)
- * and a "main" flow which the user will use once logged in.
- */
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import Config from "@/config"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
-import { HomeScreen } from "@/screens/HomeScreen"
 import { ReportDetailScreen } from "@/screens/ReportDetailScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import { ReportsTabNavigator } from "./ReportsTabNavigator"
 
-/**
- * This is a list of all the route names that will exit the app if the back button
- * is pressed while in that screen. Only affects Android.
- */
 const exitRoutes = Config.exitRoutes
 
 const queryClient = new QueryClient({
@@ -34,7 +24,6 @@ const queryClient = new QueryClient({
   },
 })
 
-// Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
@@ -46,16 +35,26 @@ const AppStack = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        navigationBarColor: colors.background,
         contentStyle: {
           backgroundColor: colors.background,
         },
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="ReportDetail" component={ReportDetailScreen} />
+      <Stack.Screen name="ReportsTabs" component={ReportsTabNavigator} />
+      <Stack.Screen
+        name="ReportDetail"
+        component={ReportDetailScreen}
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerBlurEffect: "systemUltraThinMaterial",
+          headerTitle: "",
+          headerTintColor: "#ffffff",
+          headerShadowVisible: false,
+          headerLargeTitleEnabled: false,
+        }}
+      />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      {/** 🔥 Your screens go here */}
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

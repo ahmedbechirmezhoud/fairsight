@@ -13,6 +13,7 @@ export { IssueListItem } from "./IssueListItem"
 
 // Organisms
 export { ReportCard } from "./ReportCard"
+export { ReportsMapView } from "./ReportsMapView"
 export { ReportCardSkeleton } from "./ReportCardSkeleton"
 export {
   ReportDetailHeaderSkeleton,

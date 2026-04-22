@@ -1,4 +1,4 @@
-import { View, ViewStyle, TextStyle } from "react-native"
+import { Linking, Platform, Pressable, View, ViewStyle, TextStyle } from "react-native"
 import MapView, { Marker } from "react-native-maps"
 
 import { Text } from "@/components/Text"
@@ -14,40 +14,55 @@ interface LocationMapProps {
   title?: string
 }
 
+function openDirections(latitude: number, longitude: number, label?: string) {
+  const encodedLabel = encodeURIComponent(label ?? "Inspection site")
+  const url = Platform.select({
+    ios: `maps://maps.apple.com/?daddr=${latitude},${longitude}&dirflg=d`,
+    android: `google.navigation:q=${latitude},${longitude}&title=${encodedLabel}`,
+  })
+  if (url) Linking.openURL(url)
+}
+
 export function LocationMap({ latitude, longitude, title }: LocationMapProps) {
   const { themed, theme } = useAppTheme()
 
   return (
-    <View style={themed($container)}>
-      <MapView
-        style={$map}
-        initialRegion={{
-          latitude,
-          longitude,
-          latitudeDelta: DELTA,
-          longitudeDelta: DELTA,
-        }}
-        scrollEnabled={false}
-        zoomEnabled={false}
-        rotateEnabled={false}
-        pitchEnabled={false}
-        accessibilityLabel={title ? `Map showing ${title}` : "Inspection site location"}
-      >
-        <Marker
-          coordinate={{ latitude, longitude }}
-          title={title}
-          pinColor={theme.colors.text}
-          accessibilityLabel={`Marker at inspection site${title ? `: ${title}` : ""}`}
-        />
-      </MapView>
-      {title && (
-        <View style={themed($caption)}>
-          <Text size="xxs" style={themed($captionText)}>
-            {title}
-          </Text>
-        </View>
-      )}
-    </View>
+    <Pressable
+      onPress={() => openDirections(latitude, longitude, title)}
+      accessibilityRole="button"
+      accessibilityLabel={`Open directions to ${title ?? "inspection site"}`}
+    >
+      <View style={themed($container)}>
+        <MapView
+          style={$map}
+          initialRegion={{
+            latitude,
+            longitude,
+            latitudeDelta: DELTA,
+            longitudeDelta: DELTA,
+          }}
+          scrollEnabled={false}
+          zoomEnabled={false}
+          rotateEnabled={false}
+          pitchEnabled={false}
+          accessibilityLabel={title ? `Map showing ${title}` : "Inspection site location"}
+        >
+          <Marker
+            coordinate={{ latitude, longitude }}
+            title={title}
+            pinColor={theme.colors.text}
+            accessibilityLabel={`Marker at inspection site${title ? `: ${title}` : ""}`}
+          />
+        </MapView>
+        {title && (
+          <View style={themed($caption)}>
+            <Text size="xxs" style={themed($captionText)}>
+              {title}
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
   )
 }
 

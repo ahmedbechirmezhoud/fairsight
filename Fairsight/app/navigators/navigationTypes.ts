@@ -7,21 +7,18 @@ import {
 } from "@react-navigation/native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
-// Demo Tab Navigator types
-export type DemoTabParamList = {
-  DemoCommunity: undefined
-  DemoShowroom: { queryIndex?: string; itemIndex?: string }
-  DemoDebug: undefined
-  DemoPodcastList: undefined
+// Reports Tab Navigator types
+export type ReportsTabParamList = {
+  ReportsList: undefined
+  ReportsMap: undefined
+  ReportsSearch: undefined
 }
 
 // App Stack Navigator types
 export type AppStackParamList = {
-  Home: undefined
+  ReportsTabs: NavigatorScreenParams<ReportsTabParamList>
   ReportDetail: { id: string; thumbnail: string }
   Welcome: undefined
-  Login: undefined
-  Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -31,8 +28,8 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
-export type DemoTabScreenProps<T extends keyof DemoTabParamList> = CompositeScreenProps<
-  BottomTabScreenProps<DemoTabParamList, T>,
+export type ReportsTabScreenProps<T extends keyof ReportsTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<ReportsTabParamList, T>,
   AppStackScreenProps<keyof AppStackParamList>
 >
 

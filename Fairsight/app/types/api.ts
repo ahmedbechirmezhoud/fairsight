@@ -33,6 +33,10 @@ export interface ReportSummary {
   inspection_type: InspectionType
   thumbnail: string
   issues_count: number
+  coordinates: {
+    latitude: number
+    longitude: number
+  }
 }
 
 export interface ReportDetail extends ReportSummary {

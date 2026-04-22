@@ -52,6 +52,7 @@ app.get("/api/reports", (req, res) => {
     inspection_type: r.inspection_type,
     thumbnail: r.thumbnail,
     issues_count: r.issues ? r.issues.length : 0,
+    coordinates: r.coordinates,
   }));
 
   res.json({ reports: summaries, total: summaries.length });
