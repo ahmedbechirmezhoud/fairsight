@@ -26,7 +26,7 @@ export function SearchResultsBody({
 
   if (trimmed.length === 0) {
     return (
-      <View style={[$fill, $centered]}>
+      <View style={[$fill, themed($hintContainer)]}>
         <Text size="sm" style={themed($hint)}>
           Search by title or location
         </Text>
@@ -76,6 +76,11 @@ const $centered: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
 }
+
+const $hintContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  alignItems: "center",
+  paddingTop: spacing.xxl,
+})
 
 const $hint: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
