@@ -1,5 +1,13 @@
 import { FC, useCallback, useRef, useState } from "react"
-import { FlatList, Pressable, TextStyle, View, ViewStyle } from "react-native"
+import {
+  // eslint-disable-next-line no-restricted-imports
+  TextInput,
+  FlatList,
+  Pressable,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native"
 import {
   isLiquidGlassSupported,
   LiquidGlassContainerView,
@@ -11,7 +19,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { ReportCard, ReportCardSkeleton } from "@/components/report"
 import { Text } from "@/components/Text"
-import { TextField } from "@/components/TextField"
 import type { ReportsTabScreenProps } from "@/navigators/navigationTypes"
 import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
@@ -27,7 +34,7 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
 }) {
   const { themed, theme } = useAppTheme()
   const insets = useSafeAreaInsets()
-  const inputRef = useRef<React.ElementRef<typeof TextField>>(null)
+  const inputRef = useRef<TextInput>(null)
   const [query, setQuery] = useState("")
 
   useFocusEffect(
@@ -53,8 +60,6 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
   function handlePressReport(report: ReportSummary) {
     navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
   }
-
-  const bottomPad: ViewStyle = { paddingBottom: insets.bottom + 8 }
 
   return (
     <View style={themed($screen)}>
@@ -99,8 +104,7 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
         entering={SlideInDown.duration(280).springify().damping(20).stiffness(200)}
         style={[
           themed($bar),
-          bottomPad,
-          // On iOS 26+ let glass provide the visual — remove the solid bg and border
+          { paddingBottom: insets.bottom + 10 },
           isLiquidGlassSupported && $barGlass,
         ]}
       >
@@ -115,11 +119,10 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
             effect="regular"
             style={[
               $inputPill,
-              // Fallback solid bg when glass is not active
               !isLiquidGlassSupported && { backgroundColor: theme.colors.backgroundSurface },
             ]}
           >
-            <TextField
+            <TextInput
               ref={inputRef}
               value={query}
               onChangeText={setQuery}
@@ -130,8 +133,6 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
               autoCapitalize="none"
               clearButtonMode="while-editing"
               style={themed($input)}
-              containerStyle={$fieldContainer}
-              inputWrapperStyle={$fieldWrapper}
             />
           </LiquidGlassView>
 
@@ -146,7 +147,7 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
           >
             <Pressable
               onPress={handleClose}
-              hitSlop={12}
+              hitSlop={8}
               accessibilityRole="button"
               accessibilityLabel="Close search"
               style={$closePressable}
@@ -174,7 +175,6 @@ const $screen: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.background,
 })
 
-// Solid bar — used on older iOS and Android
 const $bar: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   borderTopWidth: 1,
@@ -183,7 +183,6 @@ const $bar: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   paddingHorizontal: spacing.md,
 })
 
-// Override: transparent + no border when liquid glass is active
 const $barGlass: ViewStyle = {
   backgroundColor: "transparent",
   borderTopWidth: 0,
@@ -195,30 +194,28 @@ const $row: ViewStyle = {
   gap: 8,
 }
 
-// Neutralize TextField's default container/wrapper so LiquidGlassView provides the visual
-const $fieldContainer: ViewStyle = { padding: 0, margin: 0 }
-const $fieldWrapper: ViewStyle = { borderWidth: 0, backgroundColor: "transparent", padding: 0 }
-
 const $inputPill: ViewStyle = {
   flex: 1,
-  flexDirection: "row",
-  alignItems: "center",
-  borderRadius: 12,
-  height: 40,
-  paddingHorizontal: 10,
+  height: 50,
+  borderRadius: 14,
+  justifyContent: "center",
+  overflow: "hidden",
 }
 
-const $input: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $input: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
   flex: 1,
   color: colors.text,
-  fontSize: 16,
+  fontSize: 17,
+  fontFamily: typography.primary.normal,
+  height: 50,
+  paddingHorizontal: 14,
   paddingVertical: 0,
 })
 
 const $closeGlass: ViewStyle = {
-  width: 40,
-  height: 40,
-  borderRadius: 20,
+  width: 50,
+  height: 50,
+  borderRadius: 25,
   alignItems: "center",
   justifyContent: "center",
 }
@@ -231,8 +228,10 @@ const $closePressable: ViewStyle = {
 }
 
 const $closeIcon: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.textDim,
-  fontSize: 13,
+  color: colors.text,
+  fontSize: 17,
+  fontWeight: "600",
+  lineHeight: 22,
 })
 
 const $hint: ThemedStyle<TextStyle> = ({ colors }) => ({

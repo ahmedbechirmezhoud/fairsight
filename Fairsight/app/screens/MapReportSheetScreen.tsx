@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useCallback } from "react"
 import { ActivityIndicator, ScrollView, TextStyle, View, ViewStyle } from "react-native"
 
 import { SheetReportRow } from "@/components/report/SheetReportRow"
@@ -20,9 +20,12 @@ export const MapReportSheetScreen: FC<MapReportSheetScreenProps> = function MapR
   const { data, isLoading } = useReports()
   const selected = (data?.reports ?? []).filter((r) => reportIds.includes(r.id))
 
-  function handlePress(report: ReportSummary) {
-    navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
-  }
+  const handlePress = useCallback(
+    (report: ReportSummary) => {
+      navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
+    },
+    [navigation],
+  )
 
   return (
     <ScrollView style={themed($container)} contentInsetAdjustmentBehavior="automatic">

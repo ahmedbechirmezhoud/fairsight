@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { ViewStyle } from "react-native"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import MapView from "react-native-map-clustering"
@@ -13,13 +13,12 @@ interface ReportsMapViewProps {
   reports: ReportSummary[]
 }
 
-function initialRegion(reports: ReportSummary[]): Region {
-  const valid = reports.filter((r) => r.coordinates != null)
-  if (valid.length === 0) {
+function computeRegion(reports: ReportSummary[]): Region {
+  if (reports.length === 0) {
     return { latitude: 48.5, longitude: 9.9, latitudeDelta: 1, longitudeDelta: 1 }
   }
-  const lats = valid.map((r) => r.coordinates.latitude)
-  const lngs = valid.map((r) => r.coordinates.longitude)
+  const lats = reports.map((r) => r.coordinates.latitude)
+  const lngs = reports.map((r) => r.coordinates.longitude)
   const minLat = Math.min(...lats)
   const maxLat = Math.max(...lats)
   const minLng = Math.min(...lngs)
@@ -38,7 +37,14 @@ export function ReportsMapView({ reports }: ReportsMapViewProps) {
   const isDark = themeContext === "dark"
   const navigation = useNavigation<NavigationProp<AppStackParamList>>()
 
-  const reportById = useCallback((id: string) => reports.find((r) => r.id === id), [reports])
+  // Filter once — used for both region computation and marker rendering
+  const validReports = useMemo(() => reports.filter((r) => r.coordinates != null), [reports])
+
+  // O(1) id → report lookup for cluster press handler
+  const reportMap = useMemo(() => new Map(validReports.map((r) => [r.id, r])), [validReports])
+
+  // Stable initial region — recomputed only when validReports changes
+  const initialRegion = useMemo(() => computeRegion(validReports), [validReports])
 
   const openSheet = useCallback(
     (ids: string[]) => {
@@ -59,18 +65,18 @@ export function ReportsMapView({ reports }: ReportsMapViewProps) {
     (_cluster: any, leaves?: any[]) => {
       const ids = (leaves ?? [])
         .map((leaf: any) =>
-          leaf?.properties?.identifier ? reportById(leaf.properties.identifier)?.id : undefined,
+          leaf?.properties?.identifier ? reportMap.get(leaf.properties.identifier)?.id : undefined,
         )
         .filter((id): id is string => id != null)
       if (ids.length > 0) openSheet(ids)
     },
-    [reportById, openSheet],
+    [reportMap, openSheet],
   )
 
   return (
     <MapView
       style={$fill}
-      initialRegion={initialRegion(reports)}
+      initialRegion={initialRegion}
       clusterColor={theme.colors.text}
       clusterTextColor={theme.colors.background}
       onClusterPress={handleClusterPress}
@@ -78,18 +84,16 @@ export function ReportsMapView({ reports }: ReportsMapViewProps) {
       userInterfaceStyle={isDark ? "dark" : "light"}
       customMapStyle={isDark ? DARK_MAP_STYLE : []}
     >
-      {reports
-        .filter((r) => r.coordinates != null)
-        .map((report) => (
-          <Marker
-            key={report.id}
-            identifier={report.id}
-            coordinate={report.coordinates}
-            onPress={() => handleMarkerPress(report)}
-            pinColor={theme.colors.text}
-            accessibilityLabel={report.title}
-          />
-        ))}
+      {validReports.map((report) => (
+        <Marker
+          key={report.id}
+          identifier={report.id}
+          coordinate={report.coordinates}
+          onPress={() => handleMarkerPress(report)}
+          pinColor={theme.colors.text}
+          accessibilityLabel={report.title}
+        />
+      ))}
     </MapView>
   )
 }
