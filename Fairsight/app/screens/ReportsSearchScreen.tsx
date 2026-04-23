@@ -64,7 +64,7 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
   return (
     <View style={themed($screen)}>
       {/* Results */}
-      <Animated.View entering={FadeIn.duration(200)} style={$fill}>
+      <Animated.View entering={FadeIn.duration(200)} style={[$fill, { paddingTop: insets.top }]}>
         {query.trim().length === 0 ? (
           <View style={[$fill, $centered]}>
             <Text size="sm" style={themed($hint)}>
