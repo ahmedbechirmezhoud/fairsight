@@ -11,7 +11,14 @@ import {
   LiquidGlassContainerView,
   LiquidGlassView,
 } from "@callstack/liquid-glass"
-import Animated, { SlideInDown } from "react-native-reanimated"
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller"
+import Animated, {
+  interpolate,
+  SlideInDown,
+  useAnimatedStyle,
+  useDerivedValue,
+} from "react-native-reanimated"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
@@ -22,18 +29,22 @@ interface SearchBarProps {
   value: string
   onChangeText: (text: string) => void
   onClose: () => void
-  bottomInset: number
 }
 
-export function SearchBar({ inputRef, value, onChangeText, onClose, bottomInset }: SearchBarProps) {
+export function SearchBar({ inputRef, value, onChangeText, onClose }: SearchBarProps) {
   const { themed, theme } = useAppTheme()
+  const insets = useSafeAreaInsets()
+  const { progress } = useReanimatedKeyboardAnimation()
 
-  const $bottomPad: ViewStyle = { paddingBottom: bottomInset + 10 }
+  const bottomPad = useDerivedValue(() =>
+    interpolate(progress.value, [0, 1], [insets.bottom + 10, 8]),
+  )
+  const $animatedPad = useAnimatedStyle(() => ({ paddingBottom: bottomPad.value }))
 
   return (
     <Animated.View
       entering={SlideInDown.duration(280).springify().damping(20).stiffness(200)}
-      style={[themed($bar), $bottomPad, isLiquidGlassSupported && $barGlass]}
+      style={[themed($bar), $animatedPad, isLiquidGlassSupported && $barGlass]}
     >
       {/*
         LiquidGlassContainerView merges the two adjacent glass elements so their

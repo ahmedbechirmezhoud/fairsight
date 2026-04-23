@@ -3,6 +3,7 @@ import { View, ViewStyle } from "react-native"
 // eslint-disable-next-line no-restricted-imports
 import { TextInput } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
+import { KeyboardStickyView } from "react-native-keyboard-controller"
 import Animated, { FadeIn } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
@@ -64,13 +65,14 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
         />
       </Animated.View>
 
-      <SearchBar
-        inputRef={inputRef}
-        value={query}
-        onChangeText={setQuery}
-        onClose={handleClose}
-        bottomInset={insets.bottom}
-      />
+      <KeyboardStickyView offset={{ opened: 0, closed: 0 }}>
+        <SearchBar
+          inputRef={inputRef}
+          value={query}
+          onChangeText={setQuery}
+          onClose={handleClose}
+        />
+      </KeyboardStickyView>
     </View>
   )
 }
