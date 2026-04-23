@@ -11,6 +11,7 @@ import {
   LiquidGlassContainerView,
   LiquidGlassView,
 } from "@callstack/liquid-glass"
+import { Ionicons } from "@expo/vector-icons"
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller"
 import Animated, {
   interpolate,
@@ -60,6 +61,7 @@ export function SearchBar({ inputRef, value, onChangeText, onClose }: SearchBarP
             !isLiquidGlassSupported && { backgroundColor: theme.colors.backgroundSurface },
           ]}
         >
+          <Ionicons name="search" size={18} color={theme.colors.textDim} style={$searchIcon} />
           <TextInput
             ref={inputRef}
             value={value}
@@ -123,8 +125,14 @@ const $inputPill: ViewStyle = {
   flex: 1,
   height: 50,
   borderRadius: 9999,
-  justifyContent: "center",
+  flexDirection: "row",
+  alignItems: "center",
   overflow: "hidden",
+  paddingLeft: 14,
+}
+
+const $searchIcon: ViewStyle = {
+  marginRight: 8,
 }
 
 const $input: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
@@ -133,7 +141,7 @@ const $input: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
   fontSize: 17,
   fontFamily: typography.primary.normal,
   height: 50,
-  paddingHorizontal: 14,
+  paddingRight: 14,
   paddingVertical: 0,
 })
 
