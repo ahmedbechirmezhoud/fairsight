@@ -1,44 +1,42 @@
-// FairFleet — editorial monochrome, light mode
-// Rule: remove all photography → reads as black-and-cream print layout.
-// Color lives in imagery and data viz only. Chrome stays neutral.
+// FairFleet — pure grayscale, light mode
+// No warm undertones. Color lives in imagery only. Chrome is strictly neutral.
 
 const palette = {
-  // Warm neutral ramp — cream off-white → near-black
-  neutral100: "#FEFCFA", // warm near-white — modals, elevated surfaces
-  neutral200: "#F5F0EB", // cream canvas — primary screen background
-  neutral300: "#EBE3D8", // card/input surface, subtle separators
-  neutral400: "#CEC5BB", // muted border, inactive elements
-  neutral500: "#9C9088", // tertiary text, placeholders
-  neutral600: "#5C524A", // secondary text
-  neutral700: "#3A3330", // supporting copy
-  neutral800: "#1A1714", // primary text — warm near-black
-  neutral900: "#0F0D0C", // deepest black — CTA background
+  // Neutral ramp — pure white → pure black
+  neutral100: "#FFFFFF", // pure white — modals, elevated surfaces
+  neutral200: "#F5F5F5", // canvas — primary screen background
+  neutral300: "#E8E8E8", // card/input surface, separators
+  neutral400: "#CCCCCC", // muted border, inactive elements
+  neutral500: "#999999", // tertiary text, placeholders
+  neutral600: "#666666", // secondary text
+  neutral700: "#444444", // supporting copy
+  neutral800: "#1A1A1A", // primary text
+  neutral900: "#000000", // deepest black — CTA background
 
   // Monochrome "primary" — black pill CTA
-  primary100: "#EBE3D8", // CTA disabled background
-  primary500: "#0F0D0C", // CTA surface (black pill)
-  primary600: "#3A3330", // CTA pressed state
+  primary100: "#E8E8E8", // CTA disabled background
+  primary500: "#000000", // CTA surface (black pill)
+  primary600: "#333333", // CTA pressed state
 
-  // Secondary — maps to monochrome for toggles / selected states
-  secondary100: "#F5F0EB",
-  secondary200: "#EBE3D8",
-  secondary300: "#CEC5BB",
-  secondary400: "#3A3330",
-  secondary500: "#0F0D0C", // active/selected state → black
+  // Secondary — grayscale for toggles / selected states
+  secondary100: "#F5F5F5",
+  secondary200: "#E8E8E8",
+  secondary300: "#CCCCCC",
+  secondary400: "#444444",
+  secondary500: "#000000", // active/selected state
 
-  // Accent — warm amber, reserved for critical stat emphasis only
-  // Never use on UI surfaces, navigation, or text
-  accent100: "#F5EDD8",
-  accent200: "#EDD9A8",
-  accent300: "#D4B86A",
-  accent400: "#B89440",
-  accent500: "#8C6D20", // anchor — data viz / single critical metric
+  // Accent — replaced with neutral gray (no color emphasis)
+  accent100: "#F0F0F0",
+  accent200: "#E0E0E0",
+  accent300: "#AAAAAA",
+  accent400: "#777777",
+  accent500: "#555555",
 
   angry100: "#F5E6E0",
   angry500: "#C03403",
 
-  overlay20: "rgba(15, 13, 12, 0.2)",
-  overlay50: "rgba(15, 13, 12, 0.5)",
+  overlay20: "rgba(0, 0, 0, 0.2)",
+  overlay50: "rgba(0, 0, 0, 0.5)",
 } as const
 
 export const colors = {
@@ -46,23 +44,23 @@ export const colors = {
   transparent: "rgba(0, 0, 0, 0)",
 
   // — Text —
-  text: palette.neutral800, // primary: headings, body, icons
-  textDim: palette.neutral600, // secondary: supporting copy, captions
-  textSubtle: palette.neutral500, // tertiary: timestamps, disabled, placeholders
-  textInverse: palette.neutral100, // on dark/CTA surfaces
+  text: palette.neutral800,
+  textDim: palette.neutral600,
+  textSubtle: palette.neutral500,
+  textInverse: palette.neutral100,
 
   // — Backgrounds —
-  background: palette.neutral200, // canvas: base screen color
-  backgroundSurface: palette.neutral300, // cards, inputs — one step above canvas
-  backgroundElevated: palette.neutral100, // modals, sheets — two steps above canvas
+  background: palette.neutral200,
+  backgroundSurface: palette.neutral300,
+  backgroundElevated: palette.neutral100,
 
   // — Interactive —
-  tint: palette.primary500, // black pill CTA
-  tintInactive: palette.neutral400, // disabled / inactive state
+  tint: palette.primary500,
+  tintInactive: palette.neutral400,
 
   // — Border / separator —
-  border: palette.neutral300, // near-invisible warm grey (prefer whitespace)
-  separator: palette.neutral300, // list dividers, section lines
+  border: palette.neutral300,
+  separator: palette.neutral300,
 
   // — Status —
   error: palette.angry500,

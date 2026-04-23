@@ -1,43 +1,42 @@
-// FairFleet — editorial monochrome, dark mode
-// Canvas: near-black slightly warm. CTAs invert to cream/white pills.
-// Brand colors lifted 1-2 steps vs light (saturated colors read heavier on dark).
+// FairFleet — pure grayscale, dark mode
+// Canvas: pure near-black. CTAs invert to white pills.
 
 const palette = {
-  // Warm neutral ramp — inverted (darkest first to mirror light keys)
-  neutral100: "#0F0D0C", // darkest — used as "dark surface" in reversed components
-  neutral200: "#1A1714", // canvas — primary screen background (warm near-black)
-  neutral300: "#232018", // card/input surface
-  neutral400: "#2E2A24", // subtle border
-  neutral500: "#6B6560", // tertiary text
-  neutral600: "#9C9088", // secondary text
-  neutral700: "#C4BBB0", // supporting copy
-  neutral800: "#EDE5DA", // primary text (warm cream)
-  neutral900: "#F5F0EB", // brightest — headings, high-emphasis
+  // Neutral ramp — inverted (darkest first to mirror light keys)
+  neutral100: "#000000", // darkest — deep surfaces
+  neutral200: "#111111", // canvas — primary screen background
+  neutral300: "#1E1E1E", // card/input surface
+  neutral400: "#2A2A2A", // subtle border
+  neutral500: "#666666", // tertiary text
+  neutral600: "#999999", // secondary text
+  neutral700: "#BBBBBB", // supporting copy
+  neutral800: "#E8E8E8", // primary text
+  neutral900: "#F5F5F5", // high-emphasis headings
 
-  // Monochrome "primary" — cream/white pill CTA (inverted from light)
-  primary100: "#2E2A24", // CTA disabled background
-  primary500: "#F5F0EB", // CTA surface (cream pill — inverted)
-  primary600: "#EDE5DA", // CTA pressed state
+  // Monochrome "primary" — white pill CTA (inverted from light)
+  primary100: "#2A2A2A", // CTA disabled background
+  primary500: "#F5F5F5", // CTA surface (white pill)
+  primary600: "#E0E0E0", // CTA pressed state
 
-  // Secondary — maps to monochrome for toggles / selected states
-  secondary100: "#1A1714",
-  secondary200: "#2E2A24",
-  secondary300: "#6B6560",
-  secondary400: "#EDE5DA",
-  secondary500: "#F5F0EB", // active/selected state → cream/white
+  // Secondary — grayscale for toggles / selected states
+  secondary100: "#111111",
+  secondary200: "#2A2A2A",
+  secondary300: "#666666",
+  secondary400: "#E0E0E0",
+  secondary500: "#F5F5F5", // active/selected state
 
-  // Accent — lifted 1-2 steps in dark mode
-  accent100: "#1A160A",
-  accent200: "#2E2510",
-  accent300: "#8C6D20",
-  accent400: "#B89440",
-  accent500: "#D4A93A", // lifted from light's 500
+  // Accent — neutral gray (no color emphasis)
+  accent100: "#1A1A1A",
+  accent200: "#2A2A2A",
+  accent300: "#555555",
+  accent400: "#777777",
+  accent500: "#AAAAAA",
 
   angry100: "#2A1410",
-  angry500: "#E8643A", // slightly lifted for dark bg visibility
+  angry500: "#E8643A",
 
-  overlay20: "rgba(15, 13, 12, 0.2)",
-  overlay50: "rgba(15, 13, 12, 0.5)",
+  overlay20: "rgba(0, 0, 0, 0.2)",
+  overlay50: "rgba(0, 0, 0, 0.5)",
 } as const
 
 export const colors = {
