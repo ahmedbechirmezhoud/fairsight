@@ -4,15 +4,16 @@ import { SectionHeader } from "@/components/SectionHeader"
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import type { Issue } from "@/types/api"
+import type { Issue, ReportImage } from "@/types/api"
 
 import { IssueListItem } from "./IssueListItem"
 
 interface IssuesListProps {
   issues: Issue[]
+  images: ReportImage[]
 }
 
-export function IssuesList({ issues }: IssuesListProps) {
+export function IssuesList({ issues, images }: IssuesListProps) {
   const { themed } = useAppTheme()
 
   return (
@@ -28,7 +29,11 @@ export function IssuesList({ issues }: IssuesListProps) {
       ) : (
         <View style={$list}>
           {issues.map((issue) => (
-            <IssueListItem key={issue.id} issue={issue} />
+            <IssueListItem
+              key={issue.id}
+              issue={issue}
+              relatedImages={images.filter((img) => img.issue_refs.includes(issue.id))}
+            />
           ))}
         </View>
       )}

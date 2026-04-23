@@ -1,132 +1,77 @@
-import { View, ViewStyle, TextStyle } from "react-native"
+import { useState } from "react"
+import { Pressable, TextStyle, View, ViewStyle } from "react-native"
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
 
+import { Icon } from "@/components/Icon"
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import type { Issue, IssueSeverity } from "@/types/api"
+import type { Issue, ReportImage } from "@/types/api"
 
-const SEVERITY_LABEL: Record<IssueSeverity, string> = {
-  critical: "Critical",
-  warning: "Warning",
-  info: "Info",
-}
-
-const CATEGORY_LABEL: Record<Issue["category"], string> = {
-  missing_object: "Missing object",
-  soiling: "Soiling",
-  damage: "Damage",
-}
+import { CATEGORY_LABEL, SEVERITY_LABEL } from "./issueConstants"
+import { IssueImageStrip } from "./IssueImageStrip"
+import { IssueSeverityBadge } from "./IssueSeverityBadge"
+import { IssueSeverityBar } from "./IssueSeverityBar"
 
 interface IssueListItemProps {
   issue: Issue
+  relatedImages: ReportImage[]
 }
 
-export function IssueListItem({ issue }: IssueListItemProps) {
-  const { themed } = useAppTheme()
+export function IssueListItem({ issue, relatedImages }: IssueListItemProps) {
+  const { themed, theme } = useAppTheme()
+  const [expanded, setExpanded] = useState(false)
+  const hasImages = relatedImages.length > 0
+  const rotation = useSharedValue(0)
+
+  const caretStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }))
+
+  function toggle() {
+    if (!hasImages) return
+    const next = !expanded
+    setExpanded(next)
+    rotation.value = withTiming(next ? 90 : 0, { duration: 200 })
+  }
 
   return (
-    <View
+    <Pressable
+      onPress={toggle}
       style={themed($container)}
-      accessibilityRole="text"
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
       accessibilityLabel={`${SEVERITY_LABEL[issue.severity]} issue: ${issue.description}`}
     >
-      {/* Severity indicator bar */}
-      <View style={themed($severityBar[issue.severity])} />
+      <IssueSeverityBar severity={issue.severity} />
 
       <View style={$content}>
-        {/* Top row: severity + category */}
         <View style={$metaRow}>
-          <View style={themed($severityBadge[issue.severity])}>
-            <Text size="xxs" weight="semiBold" style={themed($severityLabel[issue.severity])}>
-              {SEVERITY_LABEL[issue.severity]}
-            </Text>
-          </View>
+          <IssueSeverityBadge severity={issue.severity} />
           <Text size="xxs" style={themed($category)}>
             {CATEGORY_LABEL[issue.category]}
           </Text>
+          {hasImages && (
+            <Animated.View style={[$caretWrap, caretStyle]}>
+              <Icon icon="caretRight" size={12} color={theme.colors.textSubtle} />
+            </Animated.View>
+          )}
         </View>
 
-        {/* Description */}
         <Text size="xs" style={themed($description)}>
           {issue.description}
         </Text>
 
-        {/* Location */}
         <Text size="xxs" style={themed($location)}>
           {issue.location_on_site}
         </Text>
+
+        {expanded && <IssueImageStrip images={relatedImages} />}
       </View>
-    </View>
+    </Pressable>
   )
 }
 
-// — Severity bar (left accent strip) —
-const $severityBarBase: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  width: 3,
-  borderRadius: 2,
-  alignSelf: "stretch",
-  marginRight: spacing.sm,
-})
-const $severityBarCritical: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBarBase(theme),
-  backgroundColor: theme.colors.error,
-})
-const $severityBarWarning: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBarBase(theme),
-  backgroundColor: theme.colors.palette.accent500,
-})
-const $severityBarInfo: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBarBase(theme),
-  backgroundColor: theme.colors.border,
-})
-const $severityBar: Record<IssueSeverity, ThemedStyle<ViewStyle>> = {
-  critical: $severityBarCritical,
-  warning: $severityBarWarning,
-  info: $severityBarInfo,
-}
-
-// — Severity badge —
-const $severityBadgeBase: ThemedStyle<ViewStyle> = ({ radius, spacing }) => ({
-  borderRadius: radius.full,
-  paddingHorizontal: spacing.xxs,
-  paddingVertical: 2,
-  alignSelf: "flex-start",
-})
-const $severityBadgeCritical: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBadgeBase(theme),
-  backgroundColor: theme.colors.errorBackground,
-})
-const $severityBadgeWarning: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBadgeBase(theme),
-  backgroundColor: theme.colors.palette.accent100,
-})
-const $severityBadgeInfo: ThemedStyle<ViewStyle> = (theme) => ({
-  ...$severityBadgeBase(theme),
-  backgroundColor: theme.colors.backgroundSurface,
-})
-const $severityBadge: Record<IssueSeverity, ThemedStyle<ViewStyle>> = {
-  critical: $severityBadgeCritical,
-  warning: $severityBadgeWarning,
-  info: $severityBadgeInfo,
-}
-
-// — Severity label text —
-const $severityLabelCritical: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.error,
-})
-const $severityLabelWarning: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.palette.accent500,
-})
-const $severityLabelInfo: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.textSubtle,
-})
-const $severityLabel: Record<IssueSeverity, ThemedStyle<TextStyle>> = {
-  critical: $severityLabelCritical,
-  warning: $severityLabelWarning,
-  info: $severityLabelInfo,
-}
-
-// — Layout —
 const $container: ThemedStyle<ViewStyle> = ({ colors, radius, spacing }) => ({
   flexDirection: "row",
   backgroundColor: colors.backgroundSurface,
@@ -135,24 +80,15 @@ const $container: ThemedStyle<ViewStyle> = ({ colors, radius, spacing }) => ({
   overflow: "hidden",
 })
 
-const $content: ViewStyle = {
-  flex: 1,
-  gap: 4,
-}
+const $content: ViewStyle = { flex: 1, gap: 4 }
 
-const $metaRow: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 8,
-}
+const $metaRow: ViewStyle = { flexDirection: "row", alignItems: "center", gap: 8 }
 
-const $category: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.textSubtle,
-})
+const $caretWrap: ViewStyle = { marginLeft: "auto" }
 
-const $description: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.text,
-})
+const $category: ThemedStyle<TextStyle> = ({ colors }) => ({ color: colors.textSubtle })
+
+const $description: ThemedStyle<TextStyle> = ({ colors }) => ({ color: colors.text })
 
 const $location: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textSubtle,

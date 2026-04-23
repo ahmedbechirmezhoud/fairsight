@@ -4,6 +4,7 @@ import MapView, { Marker } from "react-native-maps"
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { DARK_MAP_STYLE } from "@/utils/mapStyle"
 
 const MAP_HEIGHT = 200
 const DELTA = 0.005 // ~500m radius zoom
@@ -24,7 +25,8 @@ function openDirections(latitude: number, longitude: number, label?: string) {
 }
 
 export function LocationMap({ latitude, longitude, title }: LocationMapProps) {
-  const { themed, theme } = useAppTheme()
+  const { themed, theme, themeContext } = useAppTheme()
+  const isDark = themeContext === "dark"
 
   return (
     <Pressable
@@ -45,6 +47,8 @@ export function LocationMap({ latitude, longitude, title }: LocationMapProps) {
           zoomEnabled={false}
           rotateEnabled={false}
           pitchEnabled={false}
+          userInterfaceStyle={isDark ? "dark" : "light"}
+          customMapStyle={isDark ? DARK_MAP_STYLE : []}
           accessibilityLabel={title ? `Map showing ${title}` : "Inspection site location"}
         >
           <Marker
