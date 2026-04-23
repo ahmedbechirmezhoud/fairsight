@@ -12,6 +12,9 @@ export { LocationMap } from "./LocationMap"
 export { IssueListItem } from "./IssueListItem"
 
 // Organisms
+export { ReportHero } from "./ReportHero"
+export { ReportDetailHeader } from "./ReportDetailHeader"
+export { ReportDetailSections } from "./ReportDetailSections"
 export { ReportCard } from "./ReportCard"
 export { ReportsMapView } from "./ReportsMapView"
 export { ReportCardSkeleton } from "./ReportCardSkeleton"
