@@ -28,4 +28,7 @@ config.resolver.unstable_conditionNames = ["require", "default", "browser"]
 // such as Firebase that use the extension cjs.
 config.resolver.sourceExts.push("cjs")
 
+// Support .lottie binary assets from @lottiefiles/dotlottie-react-native
+config.resolver.assetExts.push("lottie")
+
 module.exports = config

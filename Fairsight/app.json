@@ -54,7 +54,14 @@
         }
       }
     ],
-    "expo-build-properties"
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "deploymentTarget": "15.4"
+        }
+      }
+    ]
   ],
   "experiments": {
     "tsconfigPaths": true
