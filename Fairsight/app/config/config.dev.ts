@@ -1,3 +1,10 @@
+import { Platform } from "react-native"
+
+const getApiUrl = () => {
+  if (Platform.OS === "android") return "http://10.0.2.2:3000"
+  return "http://localhost:3000" // iOS simulator
+}
+
 /**
  * These are configuration settings for the dev environment.
  *
@@ -6,5 +13,5 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "http://localhost:3000",
+  API_URL: getApiUrl(),
 }
