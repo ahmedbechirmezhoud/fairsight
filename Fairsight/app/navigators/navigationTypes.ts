@@ -20,7 +20,6 @@ export type AppStackParamList = {
   ReportDetail: { id: string; thumbnail: string }
   ReportChat: { reportId: string; reportTitle: string }
   MapReportSheet: { reportIds: string[] }
-  Welcome: undefined
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -38,3 +37,11 @@ export type ReportsTabScreenProps<T extends keyof ReportsTabParamList> = Composi
 export interface NavigationProps extends Partial<
   ComponentProps<typeof NavigationContainer<AppStackParamList>>
 > {}
+
+/* eslint-disable @typescript-eslint/no-namespace */
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends AppStackParamList {}
+  }
+}
+/* eslint-enable @typescript-eslint/no-namespace */

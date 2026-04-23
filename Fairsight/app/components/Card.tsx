@@ -45,15 +45,6 @@ interface CardProps extends TouchableOpacityProps {
    */
   heading?: TextProps["text"]
   /**
-   * Heading text which is looked up via i18n.
-   */
-  headingTx?: TextProps["tx"]
-  /**
-   * Optional heading options to pass to i18n. Useful for interpolation
-   * as well as explicitly setting locale or translation fallbacks.
-   */
-  headingTxOptions?: TextProps["txOptions"]
-  /**
    * Style overrides for heading text.
    */
   headingStyle?: StyleProp<TextStyle>
@@ -71,15 +62,6 @@ interface CardProps extends TouchableOpacityProps {
    */
   content?: TextProps["text"]
   /**
-   * Content text which is looked up via i18n.
-   */
-  contentTx?: TextProps["tx"]
-  /**
-   * Optional content options to pass to i18n. Useful for interpolation
-   * as well as explicitly setting locale or translation fallbacks.
-   */
-  contentTxOptions?: TextProps["txOptions"]
-  /**
    * Style overrides for content text.
    */
   contentStyle?: StyleProp<TextStyle>
@@ -96,15 +78,6 @@ interface CardProps extends TouchableOpacityProps {
    * The footer text to display if not using `footerTx`.
    */
   footer?: TextProps["text"]
-  /**
-   * Footer text which is looked up via i18n.
-   */
-  footerTx?: TextProps["tx"]
-  /**
-   * Optional footer options to pass to i18n. Useful for interpolation
-   * as well as explicitly setting locale or translation fallbacks.
-   */
-  footerTxOptions?: TextProps["txOptions"]
   /**
    * Style overrides for footer text.
    */
@@ -130,14 +103,8 @@ interface CardProps extends TouchableOpacityProps {
 export function Card(props: CardProps) {
   const {
     content,
-    contentTx,
-    contentTxOptions,
     footer,
-    footerTx,
-    footerTxOptions,
     heading,
-    headingTx,
-    headingTxOptions,
     ContentComponent,
     HeadingComponent,
     FooterComponent,
@@ -161,9 +128,9 @@ export function Card(props: CardProps) {
 
   const preset: Presets = props.preset ?? "default"
   const isPressable = !!WrapperProps.onPress
-  const isHeadingPresent = !!(HeadingComponent || heading || headingTx)
-  const isContentPresent = !!(ContentComponent || content || contentTx)
-  const isFooterPresent = !!(FooterComponent || footer || footerTx)
+  const isHeadingPresent = !!(HeadingComponent || heading)
+  const isContentPresent = !!(ContentComponent || content)
+  const isFooterPresent = !!(FooterComponent || footer)
 
   const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<
     TouchableOpacityProps | ViewProps
@@ -213,26 +180,12 @@ export function Card(props: CardProps) {
         <HeaderContentWrapper>
           {HeadingComponent ||
             (isHeadingPresent && (
-              <Text
-                weight="bold"
-                text={heading}
-                tx={headingTx}
-                txOptions={headingTxOptions}
-                {...HeadingTextProps}
-                style={$headingStyle}
-              />
+              <Text weight="bold" text={heading} {...HeadingTextProps} style={$headingStyle} />
             ))}
 
           {ContentComponent ||
             (isContentPresent && (
-              <Text
-                weight="normal"
-                text={content}
-                tx={contentTx}
-                txOptions={contentTxOptions}
-                {...ContentTextProps}
-                style={$contentStyle}
-              />
+              <Text weight="normal" text={content} {...ContentTextProps} style={$contentStyle} />
             ))}
         </HeaderContentWrapper>
 
@@ -242,8 +195,6 @@ export function Card(props: CardProps) {
               weight="normal"
               size="xs"
               text={footer}
-              tx={footerTx}
-              txOptions={footerTxOptions}
               {...FooterTextProps}
               style={$footerStyle}
             />

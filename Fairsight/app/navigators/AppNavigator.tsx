@@ -7,7 +7,6 @@ import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { MapReportSheetScreen } from "@/screens/MapReportSheetScreen"
 import { ReportChatScreen } from "@/screens/ReportChatScreen"
 import { ReportDetailScreen } from "@/screens/ReportDetailScreen"
-import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
@@ -79,7 +78,6 @@ const AppStack = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
