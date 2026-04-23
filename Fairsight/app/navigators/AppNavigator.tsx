@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import Config from "@/config"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
+import { MapReportSheetScreen } from "@/screens/MapReportSheetScreen"
+import { ReportChatScreen } from "@/screens/ReportChatScreen"
 import { ReportDetailScreen } from "@/screens/ReportDetailScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
@@ -52,6 +54,29 @@ const AppStack = () => {
           headerTintColor: "#ffffff",
           headerShadowVisible: false,
           headerLargeTitleEnabled: false,
+          headerBackTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="ReportChat"
+        component={ReportChatScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "",
+          headerTransparent: false,
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="MapReportSheet"
+        component={MapReportSheetScreen}
+        options={{
+          presentation: "formSheet",
+          sheetGrabberVisible: true,
+          sheetCornerRadius: 16,
+          sheetAllowedDetents: [0.5, 1.0],
+          sheetLargestUndimmedDetentIndex: "none",
+          headerShown: false,
         }}
       />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />

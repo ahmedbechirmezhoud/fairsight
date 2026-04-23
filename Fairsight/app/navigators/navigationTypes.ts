@@ -18,6 +18,8 @@ export type ReportsTabParamList = {
 export type AppStackParamList = {
   ReportsTabs: NavigatorScreenParams<ReportsTabParamList>
   ReportDetail: { id: string; thumbnail: string }
+  ReportChat: { reportId: string; reportTitle: string }
+  MapReportSheet: { reportIds: string[] }
   Welcome: undefined
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
