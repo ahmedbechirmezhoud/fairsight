@@ -1,23 +1,13 @@
 import { FC, useCallback, useRef, useState } from "react"
-import {
-  // eslint-disable-next-line no-restricted-imports
-  TextInput,
-  FlatList,
-  Pressable,
-  TextStyle,
-  View,
-  ViewStyle,
-} from "react-native"
-import {
-  isLiquidGlassSupported,
-  LiquidGlassContainerView,
-  LiquidGlassView,
-} from "@callstack/liquid-glass"
+import { FlatList, TextStyle, View, ViewStyle } from "react-native"
+// eslint-disable-next-line no-restricted-imports
+import { TextInput } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
-import Animated, { FadeIn, SlideInDown } from "react-native-reanimated"
+import Animated, { FadeIn } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { ReportCard, ReportCardSkeleton } from "@/components/report"
+import { SearchBar } from "@/components/SearchBar"
 import { Text } from "@/components/Text"
 import type { ReportsTabScreenProps } from "@/navigators/navigationTypes"
 import { useReports } from "@/queries/useReports"
@@ -32,7 +22,7 @@ interface ReportsSearchScreenProps extends ReportsTabScreenProps<"ReportsSearch"
 export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function ReportsSearchScreen({
   navigation,
 }) {
-  const { themed, theme } = useAppTheme()
+  const { themed } = useAppTheme()
   const insets = useSafeAreaInsets()
   const inputRef = useRef<TextInput>(null)
   const [query, setQuery] = useState("")
@@ -52,112 +42,98 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
   )
   const reports = data?.reports ?? []
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     inputRef.current?.blur()
     navigation.navigate("ReportsList")
-  }
+  }, [navigation])
 
-  function handlePressReport(report: ReportSummary) {
-    navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
-  }
+  const handlePressReport = useCallback(
+    (report: ReportSummary) => {
+      navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
+    },
+    [navigation],
+  )
+
+  const $topPad: ViewStyle = { paddingTop: insets.top + 12 }
 
   return (
     <View style={themed($screen)}>
-      {/* Results */}
-      <Animated.View entering={FadeIn.duration(200)} style={[$fill, { paddingTop: insets.top }]}>
-        {query.trim().length === 0 ? (
-          <View style={[$fill, $centered]}>
-            <Text size="sm" style={themed($hint)}>
-              Search by title or location
-            </Text>
-          </View>
-        ) : isLoading ? (
-          <View style={themed($listContent)}>
-            {SKELETON_KEYS.map((key) => (
-              <View key={key} style={themed($skeletonWrap)}>
-                <ReportCardSkeleton />
-              </View>
-            ))}
-          </View>
-        ) : reports.length === 0 ? (
-          <View style={[$fill, $centered]}>
-            <Text size="sm" style={themed($hint)}>
-              {`No results for "${query}"`}
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={reports}
-            keyExtractor={(item) => item.id}
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => <ReportCard report={item} onPress={handlePressReport} />}
-            contentContainerStyle={themed($listContent)}
-            ItemSeparatorComponent={() => <View style={themed($separator)} />}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+      <Animated.View entering={FadeIn.duration(200)} style={[$fill, $topPad]}>
+        <SearchResultsBody
+          query={query}
+          isLoading={isLoading}
+          reports={reports}
+          onPressReport={handlePressReport}
+        />
       </Animated.View>
 
-      {/* Bottom search bar — slides up where the tab bar was */}
-      <Animated.View
-        entering={SlideInDown.duration(280).springify().damping(20).stiffness(200)}
-        style={[
-          themed($bar),
-          { paddingBottom: insets.bottom + 10 },
-          isLiquidGlassSupported && $barGlass,
-        ]}
-      >
-        {/*
-          LiquidGlassContainerView merges the two adjacent glass elements so their
-          edges dissolve into each other — input pill + X button read as one surface.
-          On older iOS / Android it falls back to two plain Views.
-        */}
-        <LiquidGlassContainerView spacing={8} style={$row}>
-          {/* Input pill */}
-          <LiquidGlassView
-            effect="regular"
-            style={[
-              $inputPill,
-              !isLiquidGlassSupported && { backgroundColor: theme.colors.backgroundSurface },
-            ]}
-          >
-            <TextInput
-              ref={inputRef}
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Search reports…"
-              placeholderTextColor={theme.colors.textDim}
-              returnKeyType="search"
-              autoCorrect={false}
-              autoCapitalize="none"
-              clearButtonMode="while-editing"
-              style={themed($input)}
-            />
-          </LiquidGlassView>
-
-          {/* X button */}
-          <LiquidGlassView
-            effect="regular"
-            interactive
-            style={[
-              $closeGlass,
-              !isLiquidGlassSupported && { backgroundColor: theme.colors.backgroundSurface },
-            ]}
-          >
-            <Pressable
-              onPress={handleClose}
-              hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel="Close search"
-              style={$closePressable}
-            >
-              <Text style={themed($closeIcon)}>✕</Text>
-            </Pressable>
-          </LiquidGlassView>
-        </LiquidGlassContainerView>
-      </Animated.View>
+      <SearchBar
+        inputRef={inputRef}
+        value={query}
+        onChangeText={setQuery}
+        onClose={handleClose}
+        bottomInset={insets.bottom}
+      />
     </View>
+  )
+}
+
+// ─── Local sub-component ──────────────────────────────────────────────────────
+
+interface SearchResultsBodyProps {
+  query: string
+  isLoading: boolean
+  reports: ReportSummary[]
+  onPressReport: (report: ReportSummary) => void
+}
+
+function SearchResultsBody({ query, isLoading, reports, onPressReport }: SearchResultsBodyProps) {
+  const { themed } = useAppTheme()
+  const trimmed = query.trim()
+
+  if (trimmed.length === 0) {
+    return (
+      <View style={[$fill, $centered]}>
+        <Text size="sm" style={themed($hint)}>
+          Search by title or location
+        </Text>
+      </View>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <View style={themed($listContent)}>
+        {SKELETON_KEYS.map((key) => (
+          <View key={key} style={themed($skeletonWrap)}>
+            <ReportCardSkeleton />
+          </View>
+        ))}
+      </View>
+    )
+  }
+
+  if (reports.length === 0) {
+    return (
+      <View style={[$fill, $centered]}>
+        <Text size="sm" style={themed($hint)}>
+          {`No results for "${query}"`}
+        </Text>
+      </View>
+    )
+  }
+
+  return (
+    <FlatList
+      data={reports}
+      keyExtractor={(item) => item.id}
+      keyboardDismissMode="on-drag"
+      keyboardShouldPersistTaps="handled"
+      renderItem={({ item }) => <ReportCard report={item} onPress={onPressReport} />}
+      contentContainerStyle={themed($listContent)}
+      ItemSeparatorComponent={() => <View style={themed($separator)} />}
+      showsVerticalScrollIndicator={false}
+    />
   )
 }
 
@@ -173,65 +149,6 @@ const $centered: ViewStyle = {
 const $screen: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
-})
-
-const $bar: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.background,
-  borderTopWidth: 1,
-  borderTopColor: colors.border,
-  paddingTop: spacing.sm,
-  paddingHorizontal: spacing.md,
-})
-
-const $barGlass: ViewStyle = {
-  backgroundColor: "transparent",
-  borderTopWidth: 0,
-}
-
-const $row: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 8,
-}
-
-const $inputPill: ViewStyle = {
-  flex: 1,
-  height: 50,
-  borderRadius: 14,
-  justifyContent: "center",
-  overflow: "hidden",
-}
-
-const $input: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
-  flex: 1,
-  color: colors.text,
-  fontSize: 17,
-  fontFamily: typography.primary.normal,
-  height: 50,
-  paddingHorizontal: 14,
-  paddingVertical: 0,
-})
-
-const $closeGlass: ViewStyle = {
-  width: 50,
-  height: 50,
-  borderRadius: 25,
-  alignItems: "center",
-  justifyContent: "center",
-}
-
-const $closePressable: ViewStyle = {
-  width: "100%",
-  height: "100%",
-  alignItems: "center",
-  justifyContent: "center",
-}
-
-const $closeIcon: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.text,
-  fontSize: 17,
-  fontWeight: "600",
-  lineHeight: 22,
 })
 
 const $hint: ThemedStyle<TextStyle> = ({ colors }) => ({
