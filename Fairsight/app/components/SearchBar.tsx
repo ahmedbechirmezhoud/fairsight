@@ -73,6 +73,8 @@ export function SearchBar({ inputRef, value, onChangeText, onClose }: SearchBarP
             autoCapitalize="none"
             clearButtonMode="while-editing"
             style={themed($input)}
+            accessibilityLabel="Search reports"
+            accessibilityHint="Type a report title or location"
           />
         </LiquidGlassView>
 

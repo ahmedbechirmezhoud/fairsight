@@ -17,7 +17,6 @@ export const ReportChatScreen: FC<ReportChatScreenProps> = function ReportChatSc
   const { reportId } = route.params
   const { themed } = useAppTheme()
   const insets = useSafeAreaInsets()
-
   const { data: report } = useReport(reportId)
   const { messages, isCreating, isStreaming, streamingContent, error, sendMessage } =
     useConversation(reportId)
@@ -75,7 +74,6 @@ export const ReportChatScreen: FC<ReportChatScreenProps> = function ReportChatSc
           onChangeText={setInputText}
           onSend={handleSend}
           disabled={isStreaming || isCreating}
-          paddingBottom={insets.bottom + 8}
         />
       </View>
     </KeyboardAvoidingView>

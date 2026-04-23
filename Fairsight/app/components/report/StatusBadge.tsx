@@ -19,7 +19,11 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const { themed } = useAppTheme()
 
   return (
-    <View style={themed($badge[status])}>
+    <View
+      style={themed($badge[status])}
+      accessible={true}
+      accessibilityLabel={`Status: ${STATUS_LABEL[status]}`}
+    >
       <Text style={themed($label[status])} size="xxs" weight="semiBold">
         {STATUS_LABEL[status]}
       </Text>

@@ -4,6 +4,7 @@ import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 import { StatusBadge } from "./StatusBadge"
 
@@ -23,7 +24,7 @@ export function SheetReportRow({ report, onPress }: SheetReportRowProps) {
       style={themed($row)}
     >
       <Image
-        source={{ uri: report.thumbnail }}
+        source={{ uri: imageUrl(report.thumbnail) }}
         style={$thumb}
         resizeMode="cover"
         accessibilityRole="image"

@@ -39,7 +39,11 @@ export const ReportsMapScreen: FC<ReportsMapScreenProps> = function ReportsMapSc
     )
   }
 
-  return <ReportsMapView reports={reports} />
+  return (
+    <View style={$fill}>
+      <ReportsMapView reports={reports} />
+    </View>
+  )
 }
 
 const $fill: ViewStyle = { flex: 1 }

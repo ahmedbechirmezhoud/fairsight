@@ -1,11 +1,13 @@
-function buildSystemPrompt(report) {
-  const issues = report.issues || [];
+import type { Report } from "../types"
+
+export function buildSystemPrompt(report: Report): string {
+  const issues = report.issues ?? []
   const issueLines = issues
     .map(
       (i) =>
-        `- [${i.severity.toUpperCase()}] ${i.category}: ${i.description} (location: ${i.location_on_site})`
+        `- [${i.severity.toUpperCase()}] ${i.category}: ${i.description} (location: ${i.location_on_site})`,
     )
-    .join("\n");
+    .join("\n")
 
   return `You are an AI assistant helping a user review and discuss a drone inspection report. Answer questions based solely on the report content below. Be concise, professional, and factual. If asked about something not covered in the report, say so clearly.
 
@@ -25,7 +27,5 @@ Weather: ${report.weather.temperature_c}°C, wind ${report.weather.wind_speed_km
 Drone: ${report.drone.model}, altitude ${report.drone.flight_altitude_m} m, flight duration ${report.drone.flight_duration_min} min
 
 Issues found (${issues.length} total):
-${issueLines || "None"}`;
+${issueLines || "None"}`
 }
-
-module.exports = { buildSystemPrompt };

@@ -42,6 +42,7 @@ export function IssueListItem({ issue, relatedImages }: IssueListItemProps) {
       accessibilityRole="button"
       accessibilityState={{ expanded }}
       accessibilityLabel={`${SEVERITY_LABEL[issue.severity]} issue: ${issue.description}`}
+      accessibilityHint={hasImages ? "Double tap to toggle related photos" : undefined}
     >
       <IssueSeverityBar severity={issue.severity} />
 

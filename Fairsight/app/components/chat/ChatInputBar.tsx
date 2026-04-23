@@ -1,6 +1,9 @@
 import { useRef } from "react"
 import { Platform, Pressable, View, ViewStyle, TextStyle } from "react-native"
 import { SFSymbol, MaterialSymbol } from "@react-navigation/native"
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller"
+import Animated, { interpolate, useAnimatedStyle, useDerivedValue } from "react-native-reanimated"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
@@ -14,24 +17,24 @@ interface ChatInputBarProps {
   onChangeText: (text: string) => void
   onSend: () => void
   disabled: boolean
-  paddingBottom: number
 }
 
-export function ChatInputBar({
-  value,
-  onChangeText,
-  onSend,
-  disabled,
-  paddingBottom,
-}: ChatInputBarProps) {
+export function ChatInputBar({ value, onChangeText, onSend, disabled }: ChatInputBarProps) {
   const { themed, theme } = useAppTheme()
+  const insets = useSafeAreaInsets()
+  const { progress } = useReanimatedKeyboardAnimation()
   const inputRef = useRef<React.ElementRef<typeof TextField>>(null)
+
+  const bottomPad = useDerivedValue(() =>
+    interpolate(progress.value, [0, 1], [insets.bottom + 8, 8]),
+  )
+  const $animatedPad = useAnimatedStyle(() => ({ paddingBottom: bottomPad.value }))
 
   const overLimit = value.length > MAX_CHARS
   const canSend = value.trim().length > 0 && !disabled && !overLimit
 
   return (
-    <View style={[themed($bar), { paddingBottom }]}>
+    <Animated.View style={[themed($bar), $animatedPad]}>
       <View style={$row}>
         <TextField
           ref={inputRef}
@@ -46,12 +49,15 @@ export function ChatInputBar({
           containerStyle={$fieldContainer}
           inputWrapperStyle={[themed($fieldWrapper), overLimit && themed($fieldWrapperError)]}
           style={themed($fieldInput)}
+          accessibilityLabel="Message"
+          accessibilityHint="Type your question about this report"
         />
         <Pressable
           onPress={onSend}
           disabled={!canSend}
           accessibilityRole="button"
           accessibilityLabel="Send message"
+          accessibilityState={{ disabled: !canSend }}
           style={[themed($sendButton), !canSend && themed($sendButtonDisabled)]}
         >
           {Platform.OS === "ios" ? (
@@ -72,11 +78,16 @@ export function ChatInputBar({
       </View>
 
       {overLimit && (
-        <Text size="xxs" style={themed($errorLabel)}>
+        <Text
+          size="xxs"
+          style={themed($errorLabel)}
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={`Message too long: ${value.length} of ${MAX_CHARS} characters`}
+        >
           {value.length}/{MAX_CHARS} — message too long
         </Text>
       )}
-    </View>
+    </Animated.View>
   )
 }
 

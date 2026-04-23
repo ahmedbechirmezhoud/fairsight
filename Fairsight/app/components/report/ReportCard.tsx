@@ -3,6 +3,7 @@ import { TouchableOpacity, ViewStyle } from "react-native"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 import { ReportCardBody } from "./ReportCardBody"
 import { ReportCardHeader } from "./ReportCardHeader"
@@ -26,7 +27,7 @@ export function ReportCard({ report, onPress }: ReportCardProps) {
       accessibilityHint="Opens the full inspection report"
     >
       <ReportThumbnail
-        uri={report.thumbnail}
+        uri={imageUrl(report.thumbnail)}
         roundedTop
         sharedTransitionTag={`thumbnail-${report.id}`}
       />

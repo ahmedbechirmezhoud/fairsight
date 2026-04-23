@@ -1,13 +1,16 @@
 import { Platform, Pressable, ViewStyle } from "react-native"
 import { isLiquidGlassSupported, LiquidGlassView } from "@callstack/liquid-glass"
-import { MaterialSymbol, SFSymbol } from "@react-navigation/native"
+import { MaterialSymbol, MaterialSymbolProps, SFSymbol } from "@react-navigation/native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import type { SFSymbol as SFSymbolName } from "sf-symbols-typescript"
 
 import { useAppTheme } from "@/theme/context"
 
 interface GlassFABProps {
   onPress: () => void
   accessibilityLabel: string
+  icon?: { sf: string; material: string }
+  bottomOffset?: number
 }
 
 const FAB_SIZE = 56
@@ -17,23 +20,39 @@ const FAB_SIZE = 56
  *   iOS 26+ (liquid glass supported) → LiquidGlassView
  *   Everything else → solid tint button
  */
-export function GlassFAB({ onPress, accessibilityLabel }: GlassFABProps) {
+const DEFAULT_ICON = { sf: "message.fill", material: "chat" }
+
+export function GlassFAB({
+  onPress,
+  accessibilityLabel,
+  bottomOffset = 0,
+  icon = DEFAULT_ICON,
+}: GlassFABProps) {
   const { theme } = useAppTheme()
   const insets = useSafeAreaInsets()
 
   const $position: ViewStyle = {
     position: "absolute",
-    bottom: insets.bottom + theme.spacing.md,
+    bottom: insets.bottom + theme.spacing.xxxl + bottomOffset,
     right: theme.spacing.md,
   }
 
   const iconColor = isLiquidGlassSupported ? theme.colors.text : theme.colors.textInverse
 
-  const icon =
+  const iconEl =
     Platform.OS === "ios" ? (
-      <SFSymbol name="message.fill" color={iconColor} weight="medium" style={$iconSize} />
+      <SFSymbol
+        name={icon.sf as SFSymbolName}
+        color={iconColor}
+        weight="medium"
+        style={$iconSize}
+      />
     ) : (
-      <MaterialSymbol name="chat" color={iconColor} style={$iconSize} />
+      <MaterialSymbol
+        name={icon.material as MaterialSymbolProps["name"]}
+        color={iconColor}
+        style={$iconSize}
+      />
     )
 
   if (isLiquidGlassSupported) {
@@ -46,7 +65,7 @@ export function GlassFAB({ onPress, accessibilityLabel }: GlassFABProps) {
           accessibilityLabel={accessibilityLabel}
           hitSlop={8}
         >
-          {icon}
+          {iconEl}
         </Pressable>
       </LiquidGlassView>
     )
@@ -65,7 +84,7 @@ export function GlassFAB({ onPress, accessibilityLabel }: GlassFABProps) {
         radius: FAB_SIZE / 2,
       }}
     >
-      {icon}
+      {iconEl}
     </Pressable>
   )
 }

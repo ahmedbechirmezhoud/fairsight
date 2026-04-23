@@ -66,11 +66,6 @@ const mapIcon = Platform.select({
   default: { type: "materialSymbol" as const, name: "map" as MaterialSymbolName },
 })
 
-const searchIcon = Platform.select({
-  ios: undefined, // tabBarSystemItem: 'search' provides the icon on iOS
-  default: { type: "materialSymbol" as const, name: "search" as MaterialSymbolName },
-})
-
 export function ReportsTabNavigator() {
   const {
     theme: { colors },
@@ -111,17 +106,17 @@ export function ReportsTabNavigator() {
           tabBarIcon: () => mapIcon!,
         }}
       />
-      <Tab.Screen
-        name="ReportsSearch"
-        component={ReportsSearchScreen}
-        options={{
-          title: "Search",
-          tabBarSystemItem: Platform.OS === "ios" ? "search" : undefined,
-          tabBarIcon: searchIcon ? () => searchIcon : undefined,
-          // Hide the tab bar — the screen renders its own bottom search bar in its place
-          tabBarStyle: { display: "none" },
-        }}
-      />
+      {Platform.OS === "ios" && (
+        <Tab.Screen
+          name="ReportsSearch"
+          component={ReportsSearchScreen}
+          options={{
+            title: "Search",
+            tabBarSystemItem: "search",
+            tabBarStyle: { display: "none" },
+          }}
+        />
+      )}
     </Tab.Navigator>
   )
 }

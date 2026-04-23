@@ -18,7 +18,11 @@ export function TypeBadge({ type }: TypeBadgeProps) {
   const { themed } = useAppTheme()
 
   return (
-    <View style={themed($badge)}>
+    <View
+      style={themed($badge)}
+      accessible={true}
+      accessibilityLabel={`Inspection type: ${TYPE_LABEL[type]}`}
+    >
       <Text size="xxs" weight="medium" style={themed($label)}>
         {TYPE_LABEL[type]}
       </Text>

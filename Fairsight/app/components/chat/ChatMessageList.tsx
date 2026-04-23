@@ -17,7 +17,12 @@ export function ChatMessageList({ messages, isCreating }: ChatMessageListProps) 
 
   if (isCreating) {
     return (
-      <View style={$loadingContainer}>
+      <View
+        style={$loadingContainer}
+        accessible={true}
+        accessibilityLiveRegion="polite"
+        accessibilityLabel="Starting conversation"
+      >
         <ActivityIndicator color={theme.colors.textDim} />
         <Text size="xs" style={themed($loadingText)}>
           Starting conversation…
@@ -36,8 +41,14 @@ export function ChatMessageList({ messages, isCreating }: ChatMessageListProps) 
       showsVerticalScrollIndicator={false}
       keyboardDismissMode="interactive"
       keyboardShouldPersistTaps="handled"
+      accessibilityRole="list"
+      accessibilityLabel="Chat messages"
       ListEmptyComponent={
-        <View style={$emptyContainer}>
+        <View
+          style={$emptyContainer}
+          accessible={true}
+          accessibilityLabel="No messages yet. Ask anything about this report."
+        >
           <Text size="xs" style={themed($emptyText)}>
             Ask anything about this report.
           </Text>

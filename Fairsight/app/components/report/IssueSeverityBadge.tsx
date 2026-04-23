@@ -14,7 +14,11 @@ interface IssueSeverityBadgeProps {
 export function IssueSeverityBadge({ severity }: IssueSeverityBadgeProps) {
   const { themed } = useAppTheme()
   return (
-    <View style={themed($badge[severity])}>
+    <View
+      style={themed($badge[severity])}
+      accessible={true}
+      accessibilityLabel={`Severity: ${SEVERITY_LABEL[severity]}`}
+    >
       <Text size="xxs" weight="semiBold" style={themed($label[severity])}>
         {SEVERITY_LABEL[severity]}
       </Text>

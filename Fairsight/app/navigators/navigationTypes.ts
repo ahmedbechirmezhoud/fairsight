@@ -17,7 +17,7 @@ export type ReportsTabParamList = {
 // App Stack Navigator types
 export type AppStackParamList = {
   ReportsTabs: NavigatorScreenParams<ReportsTabParamList>
-  ReportDetail: { id: string; thumbnail: string }
+  ReportDetail: { id: string; title: string; thumbnail: string }
   ReportChat: { reportId: string; reportTitle: string }
   MapReportSheet: { reportIds: string[] }
   // 🔥 Your screens go here

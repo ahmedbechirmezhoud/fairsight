@@ -1,3 +1,4 @@
+import { Platform } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -45,16 +46,18 @@ const AppStack = () => {
       <Stack.Screen
         name="ReportDetail"
         component={ReportDetailScreen}
-        options={{
+        options={({ route }) => ({
           headerShown: true,
-          headerTransparent: true,
+          headerTransparent: Platform.OS === "ios",
           headerBlurEffect: "systemUltraThinMaterial",
-          headerTitle: "",
-          headerTintColor: "#ffffff",
+          headerStyle:
+            Platform.OS === "android" ? { backgroundColor: colors.background } : undefined,
+          headerTitle: route.params.title,
+          headerTintColor: colors.text,
           headerShadowVisible: false,
           headerLargeTitleEnabled: false,
           headerBackTitle: "",
-        }}
+        })}
       />
       <Stack.Screen
         name="ReportChat"

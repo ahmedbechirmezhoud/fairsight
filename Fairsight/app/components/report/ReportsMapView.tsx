@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from "react"
-import { ViewStyle } from "react-native"
-import { NavigationProp, useNavigation } from "@react-navigation/native"
+import { Platform, ViewStyle } from "react-native"
+import { useNavigation } from "@react-navigation/native"
 import MapView from "react-native-map-clustering"
-import { Marker, Region } from "react-native-maps"
+import { Marker, Region, PROVIDER_GOOGLE } from "react-native-maps"
 
-import type { AppStackParamList } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 import type { ReportSummary } from "@/types/api"
 import { DARK_MAP_STYLE } from "@/utils/mapStyle"
@@ -35,7 +34,8 @@ function computeRegion(reports: ReportSummary[]): Region {
 export function ReportsMapView({ reports }: ReportsMapViewProps) {
   const { theme, themeContext } = useAppTheme()
   const isDark = themeContext === "dark"
-  const navigation = useNavigation<NavigationProp<AppStackParamList>>()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const navigation = useNavigation() as any
 
   // Filter once — used for both region computation and marker rendering
   const validReports = useMemo(() => reports.filter((r) => r.coordinates != null), [reports])
@@ -76,6 +76,7 @@ export function ReportsMapView({ reports }: ReportsMapViewProps) {
   return (
     <MapView
       style={$fill}
+      provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
       initialRegion={initialRegion}
       clusterColor={theme.colors.text}
       clusterTextColor={theme.colors.background}
@@ -91,6 +92,7 @@ export function ReportsMapView({ reports }: ReportsMapViewProps) {
           coordinate={report.coordinates}
           onPress={() => handleMarkerPress(report)}
           pinColor={theme.colors.text}
+          tracksViewChanges={false}
           accessibilityLabel={report.title}
         />
       ))}

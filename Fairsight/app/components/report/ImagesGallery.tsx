@@ -5,6 +5,7 @@ import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportImage } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 import { ImageViewer } from "./ImageViewer"
 
@@ -45,14 +46,20 @@ export function ImagesGallery({ images }: ImagesGalleryProps) {
         numColumns={COLUMNS}
         columnWrapperStyle={$columnWrapper}
         scrollEnabled={false}
+        accessibilityRole="list"
+        accessibilityLabel={`${images.length} photo${images.length !== 1 ? "s" : ""}`}
         renderItem={({ item, index }) => (
           <Pressable
             style={[$tile, { width: TILE_SIZE, height: TILE_SIZE }]}
             onPress={() => openViewer(index)}
             accessibilityRole="button"
-            accessibilityLabel={`View image ${index + 1} of ${images.length}: ${item.filename}`}
+            accessibilityLabel={`Photo ${index + 1} of ${images.length}: ${item.filename}${item.issue_refs.length > 0 ? `, ${item.issue_refs.length} issue reference${item.issue_refs.length !== 1 ? "s" : ""}` : ""}`}
           >
-            <Image source={{ uri: item.url }} style={$tileImage} resizeMode="cover" />
+            <Image
+              source={{ uri: imageUrl(item.filename) }}
+              style={$tileImage}
+              resizeMode="cover"
+            />
             {item.issue_refs.length > 0 && (
               <View style={themed($issueIndicator)}>
                 <Text size="xxs" weight="semiBold" style={themed($issueIndicatorText)}>

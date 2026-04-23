@@ -25,6 +25,7 @@ import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportImage } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 const MIN_SCALE = 1
@@ -86,7 +87,7 @@ function ZoomableImage({ image, onZoomChange }: ZoomableImageProps) {
     <GestureDetector gesture={composed}>
       <Animated.View style={[$imageContainer, animatedStyle]}>
         <Image
-          source={{ uri: image.url }}
+          source={{ uri: imageUrl(image.filename) }}
           style={$zoomableImage}
           resizeMode="contain"
           accessibilityRole="image"

@@ -16,9 +16,20 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
   const { themed, theme } = useAppTheme()
   const isUser = message.role === "user"
 
+  const a11yLabel =
+    message.isStreaming && message.content === ""
+      ? "Assistant is typing"
+      : `${isUser ? "You" : "Assistant"}: ${message.content}`
+
   return (
     <View style={isUser ? $userRow : $assistantRow}>
-      <View style={[themed($bubble), isUser ? themed($userBubble) : themed($assistantBubble)]}>
+      <View
+        style={[themed($bubble), isUser ? themed($userBubble) : themed($assistantBubble)]}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={a11yLabel}
+        accessibilityLiveRegion={isUser ? "none" : "polite"}
+      >
         {message.isStreaming && message.content === "" ? (
           <ChatTypingIndicator />
         ) : isUser ? (

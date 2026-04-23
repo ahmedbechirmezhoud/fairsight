@@ -16,7 +16,6 @@ export interface Issue {
 export interface ReportImage {
   id: string
   filename: string
-  url: string
   type: ImageType
   captured_at: string
   width: number

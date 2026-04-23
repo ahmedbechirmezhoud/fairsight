@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from "react"
+import { FC } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { DotLottie } from "@lottiefiles/dotlottie-react-native"
 
@@ -31,12 +31,6 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
 
   const { data: imagesData, isLoading: imagesLoading } = useReportImages(id)
   const images = imagesData?.images ?? []
-
-  useLayoutEffect(() => {
-    if (report?.title) {
-      navigation.setOptions({ headerTitle: report.title })
-    }
-  }, [navigation, report?.title])
 
   if (reportError && !report) {
     return (

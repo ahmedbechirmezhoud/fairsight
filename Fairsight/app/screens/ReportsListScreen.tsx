@@ -1,57 +1,54 @@
-import { FC, useCallback } from "react"
-import { FlatList, RefreshControl, View, ViewStyle } from "react-native"
+import { FC, useCallback, useState } from "react"
+import { Platform, ViewStyle } from "react-native"
 
-import { ReportCard, ReportListEmptyState, ReportListSkeleton } from "@/components/report"
+import { ReportListFeed, ReportListSearchBar } from "@/components/report"
 import { Screen } from "@/components/Screen"
 import type { ReportsTabScreenProps } from "@/navigators/navigationTypes"
 import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 interface ReportsListScreenProps extends ReportsTabScreenProps<"ReportsList"> {}
 
 export const ReportsListScreen: FC<ReportsListScreenProps> = function ReportsListScreen({
   navigation,
 }) {
-  const { themed, theme } = useAppTheme()
-  const { data, isLoading, isError, refetch, isFetching } = useReports()
+  const { themed } = useAppTheme()
+  const [query, setQuery] = useState("")
+
+  const trimmed = query.trim()
+  const { data, isLoading, isError, refetch, isFetching } = useReports(
+    trimmed ? { search: trimmed } : undefined,
+  )
   const reports = data?.reports ?? []
 
   const handlePressReport = useCallback(
     (report: ReportSummary) => {
-      navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
+      navigation.navigate("ReportDetail", {
+        id: report.id,
+        title: report.title,
+        thumbnail: imageUrl(report.thumbnail),
+      })
     },
     [navigation],
   )
 
-  const listContentStyle = themed($listContent)
+  const listContentStyle: ViewStyle = themed($listContent)
 
   return (
     <Screen preset="fixed" safeAreaEdges={[]} style={themed($screen)} contentContainerStyle={$fill}>
-      {isLoading ? (
-        <ReportListSkeleton contentStyle={listContentStyle} />
-      ) : (
-        <FlatList
-          data={reports}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ReportCard report={item} onPress={handlePressReport} />}
-          contentContainerStyle={listContentStyle}
-          ItemSeparatorComponent={() => <View style={themed($separator)} />}
-          ListEmptyComponent={<ReportListEmptyState isError={isError} onRetry={refetch} />}
-          refreshControl={
-            <RefreshControl
-              refreshing={isFetching}
-              onRefresh={refetch}
-              tintColor={theme.colors.text}
-              colors={[theme.colors.text]}
-              title=""
-              titleColor={theme.colors.text}
-            />
-          }
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      {Platform.OS === "android" && <ReportListSearchBar value={query} onChangeText={setQuery} />}
+      <ReportListFeed
+        reports={reports}
+        isLoading={isLoading}
+        isError={isError}
+        isFetching={isFetching}
+        onRefetch={refetch}
+        onPressReport={handlePressReport}
+        contentStyle={listContentStyle}
+      />
     </Screen>
   )
 }
@@ -64,11 +61,7 @@ const $screen: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 
 const $listContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingBottom: spacing.xl,
   paddingTop: spacing.xs,
+  paddingBottom: 2 * spacing.xxxl,
   flexGrow: 1,
-})
-
-const $separator: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  height: spacing.sm,
 })

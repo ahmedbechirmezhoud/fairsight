@@ -14,6 +14,7 @@ import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 interface ReportsSearchScreenProps extends ReportsTabScreenProps<"ReportsSearch"> {}
 
@@ -42,12 +43,16 @@ export const ReportsSearchScreen: FC<ReportsSearchScreenProps> = function Report
 
   const handleClose = useCallback(() => {
     inputRef.current?.blur()
-    navigation.navigate("ReportsList")
+    navigation.goBack() // or navigation.navigate("ReportsList") if you want to reset the stack to the list screen instead of going back to the previous screen (which could be the map or report detail) --- IGNORE ---
   }, [navigation])
 
   const handlePressReport = useCallback(
     (report: ReportSummary) => {
-      navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
+      navigation.navigate("ReportDetail", {
+        id: report.id,
+        title: report.title,
+        thumbnail: imageUrl(report.thumbnail),
+      })
     },
     [navigation],
   )

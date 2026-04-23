@@ -20,6 +20,8 @@ export { ReportsMapView } from "./ReportsMapView"
 export { ReportCardSkeleton } from "./ReportCardSkeleton"
 export { ReportListSkeleton } from "./ReportListSkeleton"
 export { ReportListEmptyState } from "./ReportListEmptyState"
+export { ReportListSearchBar } from "./ReportListSearchBar"
+export { ReportListFeed } from "./ReportListFeed"
 export {
   ReportDetailHeaderSkeleton,
   DetailsSectionSkeleton,

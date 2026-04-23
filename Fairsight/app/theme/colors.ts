@@ -7,7 +7,7 @@ const palette = {
   neutral200: "#F5F5F5", // canvas — primary screen background
   neutral300: "#E8E8E8", // card/input surface, separators
   neutral400: "#CCCCCC", // muted border, inactive elements
-  neutral500: "#999999", // tertiary text, placeholders
+  neutral500: "#676767", // tertiary text, placeholders
   neutral600: "#666666", // secondary text
   neutral700: "#444444", // supporting copy
   neutral800: "#1A1A1A", // primary text

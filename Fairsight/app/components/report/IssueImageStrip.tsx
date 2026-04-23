@@ -3,6 +3,7 @@ import { Image, ImageStyle, Pressable, ScrollView, ViewStyle } from "react-nativ
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated"
 
 import type { ReportImage } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 import { ImageViewer } from "./ImageViewer"
 
@@ -33,7 +34,7 @@ export function IssueImageStrip({ images }: IssueImageStripProps) {
               accessibilityRole="button"
               accessibilityLabel={`View image ${i + 1}: ${img.filename}`}
             >
-              <Image source={{ uri: img.url }} style={$thumb} resizeMode="cover" />
+              <Image source={{ uri: imageUrl(img.filename) }} style={$thumb} resizeMode="cover" />
             </Pressable>
           ))}
         </ScrollView>

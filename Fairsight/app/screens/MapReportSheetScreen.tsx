@@ -8,6 +8,7 @@ import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import type { ReportSummary } from "@/types/api"
+import { imageUrl } from "@/utils/imageUrl"
 
 interface MapReportSheetScreenProps extends AppStackScreenProps<"MapReportSheet"> {}
 
@@ -22,7 +23,11 @@ export const MapReportSheetScreen: FC<MapReportSheetScreenProps> = function MapR
 
   const handlePress = useCallback(
     (report: ReportSummary) => {
-      navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
+      navigation.navigate("ReportDetail", {
+        id: report.id,
+        title: report.title,
+        thumbnail: imageUrl(report.thumbnail),
+      })
     },
     [navigation],
   )

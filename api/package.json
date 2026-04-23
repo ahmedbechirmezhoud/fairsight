@@ -2,12 +2,13 @@
   "name": "fairfleet-mock-api",
   "version": "1.0.0",
   "description": "Mock API for FairFleet mobile developer technical test",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
-    "start": "node server.js"
+    "start": "tsx server.ts",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.53",
@@ -16,5 +17,12 @@
     "dotenv": "^17.4.2",
     "express": "^4.21.0",
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
   }
 }
