@@ -7,20 +7,13 @@ import type { ReportsTabScreenProps } from "@/navigators/navigationTypes"
 import { useReports } from "@/queries/useReports"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import type { ReportSummary } from "@/types/api"
 
 interface ReportsMapScreenProps extends ReportsTabScreenProps<"ReportsMap"> {}
 
-export const ReportsMapScreen: FC<ReportsMapScreenProps> = function ReportsMapScreen({
-  navigation,
-}) {
+export const ReportsMapScreen: FC<ReportsMapScreenProps> = function ReportsMapScreen() {
   const { themed } = useAppTheme()
   const { data, isLoading } = useReports()
   const reports = data?.reports ?? []
-
-  function handlePressReport(report: ReportSummary) {
-    navigation.navigate("ReportDetail", { id: report.id, thumbnail: report.thumbnail })
-  }
 
   if (isLoading) {
     return (
@@ -32,7 +25,7 @@ export const ReportsMapScreen: FC<ReportsMapScreenProps> = function ReportsMapSc
     )
   }
 
-  return <ReportsMapView reports={reports} onPressReport={handlePressReport} />
+  return <ReportsMapView reports={reports} />
 }
 
 const $fill: ViewStyle = { flex: 1 }

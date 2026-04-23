@@ -1,5 +1,6 @@
 import { FC } from "react"
 import { FlatList, RefreshControl, TextStyle, View, ViewStyle } from "react-native"
+import { DotLottie } from "@lottiefiles/dotlottie-react-native"
 
 import { ReportCard, ReportCardSkeleton } from "@/components/report"
 import { Screen } from "@/components/Screen"
@@ -29,6 +30,12 @@ export const ReportsListScreen: FC<ReportsListScreenProps> = function ReportsLis
     if (isError) {
       return (
         <View style={[$centered, themed($stateContainer)]}>
+          <DotLottie
+            source={require("../../assets/drone_error.lottie")}
+            style={$lottieError}
+            autoplay
+            loop
+          />
           <Text size="lg" weight="semiBold" style={themed($stateTitle)}>
             Could not load reports
           </Text>
@@ -90,6 +97,8 @@ export const ReportsListScreen: FC<ReportsListScreenProps> = function ReportsLis
 }
 
 const $fill: ViewStyle = { flex: 1 }
+
+const $lottieError: ViewStyle = { width: 300, height: 300 }
 
 const $screen: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.background,

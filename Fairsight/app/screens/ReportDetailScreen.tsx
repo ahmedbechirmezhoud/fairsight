@@ -1,7 +1,9 @@
 import { FC, useLayoutEffect } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
+import { DotLottie } from "@lottiefiles/dotlottie-react-native"
 import Animated from "react-native-reanimated"
 
+import { GlassFAB } from "@/components/GlassFAB"
 import { ContextSection } from "@/components/report/ContextSection"
 import { DetailsSection } from "@/components/report/DetailsSection"
 import { FlightSection } from "@/components/report/FlightSection"
@@ -57,6 +59,12 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
     return (
       <Screen preset="fixed" safeAreaEdges={[]} style={themed($screen)}>
         <View style={[$centered, themed($stateContainer)]}>
+          <DotLottie
+            source={require("../../assets/drone_error.lottie")}
+            style={$lottieError}
+            autoplay
+            loop
+          />
           <Text size="lg" weight="semiBold" style={themed($stateTitle)}>
             Could not load report
           </Text>
@@ -77,119 +85,134 @@ export const ReportDetailScreen: FC<ReportDetailScreenProps> = function ReportDe
   }
 
   return (
-    <Screen
-      preset="scroll"
-      safeAreaEdges={["bottom"]}
-      contentContainerStyle={themed($scrollContent)}
-      style={themed($screen)}
-    >
-      {/* — Hero — always renders with thumbnail from nav params — */}
-      <View style={$heroWrapper}>
-        <Animated.Image
-          source={{ uri: thumbnail }}
-          style={[$hero, { height: HERO_HEIGHT }]}
-          resizeMode="cover"
-          accessibilityRole="image"
-          accessibilityLabel={report ? `Thumbnail for ${report.title}` : "Report thumbnail"}
-          sharedTransitionTag={`thumbnail-${id}`}
-        />
-      </View>
+    <View style={$fill}>
+      <Screen
+        preset="scroll"
+        safeAreaEdges={["bottom"]}
+        contentContainerStyle={themed($scrollContent)}
+        style={themed($screen)}
+      >
+        {/* — Hero — always renders with thumbnail from nav params — */}
+        <View style={$heroWrapper}>
+          <Animated.Image
+            source={{ uri: thumbnail }}
+            style={[$hero, { height: HERO_HEIGHT }]}
+            resizeMode="cover"
+            accessibilityRole="image"
+            accessibilityLabel={report ? `Thumbnail for ${report.title}` : "Report thumbnail"}
+            sharedTransitionTag={`thumbnail-${id}`}
+          />
+        </View>
 
-      {/* — Header block — */}
-      {reportLoading ? (
-        <ReportDetailHeaderSkeleton />
-      ) : (
-        report && (
-          <View style={themed($headerBlock)}>
-            <View style={$badgeRow}>
-              <StatusBadge status={report.status} />
-              <TypeBadge type={report.inspection_type} />
+        {/* — Header block — */}
+        {reportLoading ? (
+          <ReportDetailHeaderSkeleton />
+        ) : (
+          report && (
+            <View style={themed($headerBlock)}>
+              <View style={$badgeRow}>
+                <StatusBadge status={report.status} />
+                <TypeBadge type={report.inspection_type} />
+              </View>
+              <Text size="xl" weight="bold" style={themed($title)}>
+                {report.title}
+              </Text>
+              <Text size="xs" style={themed($date)}>
+                {formatReportDate(report.date)}
+              </Text>
             </View>
-            <Text size="xl" weight="bold" style={themed($title)}>
-              {report.title}
-            </Text>
-            <Text size="xs" style={themed($date)}>
-              {formatReportDate(report.date)}
-            </Text>
-          </View>
-        )
+          )
+        )}
+
+        {/* — Content sections — */}
+        <View style={themed($sections)}>
+          {/* Details */}
+          {reportLoading ? (
+            <DetailsSectionSkeleton />
+          ) : (
+            report && (
+              <DetailsSection
+                description={report.description}
+                client={report.client}
+                inspector={report.inspector}
+              />
+            )
+          )}
+
+          <View style={themed($divider)} />
+
+          {/* Context */}
+          {reportLoading ? (
+            <ContextSectionSkeleton />
+          ) : (
+            report && (
+              <ContextSection
+                latitude={report.coordinates.latitude}
+                longitude={report.coordinates.longitude}
+                location={report.location}
+                temperature_c={report.weather.temperature_c}
+                wind_speed_kmh={report.weather.wind_speed_kmh}
+                conditions={report.weather.conditions}
+                area_sqm={report.area_sqm}
+              />
+            )
+          )}
+
+          <View style={themed($divider)} />
+
+          {/* Flight */}
+          {reportLoading ? (
+            <FlightSectionSkeleton />
+          ) : (
+            report && (
+              <FlightSection
+                model={report.drone.model}
+                flight_altitude_m={report.drone.flight_altitude_m}
+                flight_duration_min={report.drone.flight_duration_min}
+              />
+            )
+          )}
+
+          <View style={themed($divider)} />
+
+          {/* Images */}
+          {imagesLoading ? (
+            <ImagesSectionSkeleton />
+          ) : (
+            <View style={themed($gallerySection)}>
+              <Text size="xxs" weight="semiBold" style={themed($sectionTitle)}>
+                IMAGES
+              </Text>
+              <ImagesGallery images={images} />
+            </View>
+          )}
+
+          <View style={themed($divider)} />
+
+          {/* Issues */}
+          {reportLoading ? (
+            <IssuesSectionSkeleton />
+          ) : (
+            report && <IssuesList issues={report.issues} images={images} />
+          )}
+        </View>
+      </Screen>
+
+      {report && (
+        <GlassFAB
+          onPress={() =>
+            navigation.navigate("ReportChat", { reportId: id, reportTitle: report.title })
+          }
+          accessibilityLabel="Chat about this report"
+        />
       )}
-
-      {/* — Content sections — */}
-      <View style={themed($sections)}>
-        {/* Details */}
-        {reportLoading ? (
-          <DetailsSectionSkeleton />
-        ) : (
-          report && (
-            <DetailsSection
-              description={report.description}
-              client={report.client}
-              inspector={report.inspector}
-            />
-          )
-        )}
-
-        <View style={themed($divider)} />
-
-        {/* Context */}
-        {reportLoading ? (
-          <ContextSectionSkeleton />
-        ) : (
-          report && (
-            <ContextSection
-              latitude={report.coordinates.latitude}
-              longitude={report.coordinates.longitude}
-              location={report.location}
-              temperature_c={report.weather.temperature_c}
-              wind_speed_kmh={report.weather.wind_speed_kmh}
-              conditions={report.weather.conditions}
-              area_sqm={report.area_sqm}
-            />
-          )
-        )}
-
-        <View style={themed($divider)} />
-
-        {/* Flight */}
-        {reportLoading ? (
-          <FlightSectionSkeleton />
-        ) : (
-          report && (
-            <FlightSection
-              model={report.drone.model}
-              flight_altitude_m={report.drone.flight_altitude_m}
-              flight_duration_min={report.drone.flight_duration_min}
-            />
-          )
-        )}
-
-        <View style={themed($divider)} />
-
-        {/* Images */}
-        {imagesLoading ? (
-          <ImagesSectionSkeleton />
-        ) : (
-          <View style={themed($gallerySection)}>
-            <Text size="xxs" weight="semiBold" style={themed($sectionTitle)}>
-              IMAGES
-            </Text>
-            <ImagesGallery images={images} />
-          </View>
-        )}
-
-        <View style={themed($divider)} />
-
-        {/* Issues */}
-        {reportLoading ? (
-          <IssuesSectionSkeleton />
-        ) : (
-          report && <IssuesList issues={report.issues} />
-        )}
-      </View>
-    </Screen>
+    </View>
   )
 }
+
+const $fill: ViewStyle = { flex: 1 }
+
+const $lottieError: ViewStyle = { width: 260, height: 260 }
 
 const $screen: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.background,
