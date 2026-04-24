@@ -83,7 +83,29 @@ npm run ios            # or npm run android
 
 ## Demos
 
-<!-- screen recordings and screenshots go here -->
+### iOS
+
+**Light mode — report list & detail**
+
+![iOS demo](demos/ios-demo.gif)
+
+**Dark mode**
+
+![iOS dark mode](demos/ios-dark-demo.gif)
+
+**Error state**
+
+![iOS error state](demos/ios-error-state.gif)
+
+### Android
+
+**Report list**
+
+![Android list](demos/android-list-demo.gif)
+
+**Map view**
+
+![Android map](demos/android-map.gif)
 
 ---
 
