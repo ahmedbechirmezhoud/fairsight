@@ -32,7 +32,7 @@ A local mock server that provides the report data and hosts the AI chat endpoint
 |---|---|
 | Framework | React Native 0.83 / Expo SDK 55 |
 | Language | TypeScript (strict) |
-| Navigation | React Navigation v7 — native stack + bottom tabs |
+| Navigation | React Navigation v8 — native stack + bottom tabs |
 | Data fetching | TanStack Query v5 |
 | HTTP client | apisauce (axios wrapper) |
 | Maps (iOS) | react-native-maps — Apple Maps, no API key required |
