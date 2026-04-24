@@ -1,4 +1,5 @@
 import { ExpoConfig, ConfigContext } from "@expo/config"
+import { withStringsXml, AndroidConfig } from "@expo/config-plugins"
 
 /**
  * Use tsx/cjs here so we can use TypeScript for our Config Plugins
@@ -9,6 +10,25 @@ import { ExpoConfig, ConfigContext } from "@expo/config"
 import "tsx/cjs"
 
 /**
+ * Writes the Mapbox public access token to Android's strings.xml so the
+ * native MapView constructor can read it before the JS bridge is ready.
+ *
+ * Without this, MapboxConfigurationException is thrown at startup because
+ * MapboxGL.setAccessToken() (JS-side) fires too late.
+ *
+ * Token source: EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN in your .env file.
+ */
+function withMapboxAccessToken(c: ExpoConfig, token: string): ExpoConfig {
+  return withStringsXml(c, (cfg) => {
+    cfg.modResults = AndroidConfig.Strings.setStringItem(
+      [{ $: { name: "mapbox_access_token", translatable: "false" }, _: token }],
+      cfg.modResults,
+    )
+    return cfg
+  }) as ExpoConfig
+}
+
+/**
  * @param config ExpoConfig coming from the static config app.json if it exists
  *
  * You can read more about Expo's Configuration Resolution Rules here:
@@ -17,7 +37,7 @@ import "tsx/cjs"
 module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
   const existingPlugins = config.plugins ?? []
 
-  return {
+  let result: Partial<ExpoConfig> = {
     ...config,
     ios: {
       ...config.ios,
@@ -36,6 +56,21 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
         ],
       },
     },
-    plugins: [...existingPlugins],
+    plugins: [
+      ...existingPlugins,
+      // @rnmapbox/maps plugin handles the Maven download token (Android build-time).
+      // The deprecated RNMapboxMapsDownloadToken prop is intentionally omitted here —
+      // set RNMAPBOX_MAPS_DOWNLOAD_TOKEN as an env var instead (SDK v11 usually doesn't need it).
+      "@rnmapbox/maps",
+    ],
   }
+
+  // Write the Mapbox public access token to android/app/src/main/res/values/strings.xml
+  // so the native MapView can read it at init time (before JS bridge is available).
+  const mapboxToken = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN
+  if (mapboxToken) {
+    result = withMapboxAccessToken(result as ExpoConfig, mapboxToken)
+  }
+
+  return result
 }
