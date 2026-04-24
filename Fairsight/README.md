@@ -1,77 +1,155 @@
-# Welcome to your new ignited app!
+# Fairsight — Mobile
 
-> The latest and greatest boilerplate for Infinite Red opinions
+React Native / Expo mobile app for the Fairsight drone inspection viewer.
 
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
+---
 
-- [Quick start documentation](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/Boilerplate.md)
-- [Full documentation](https://github.com/infinitered/ignite/blob/master/docs/README.md)
+## Important: Expo Go is not supported
 
-## Getting Started
+This app uses custom native modules (`@rnmapbox/maps`, `react-native-mmkv`, `react-native-keyboard-controller`, `react-native-bottom-tabs`, `@callstack/liquid-glass`). **It will not run in Expo Go.** You must build and install a custom dev client first.
+
+---
+
+## Prerequisites
+
+- Node.js 18+
+- Xcode (iOS) or Android Studio (Android) installed and configured
+- An iOS simulator or Android emulator, or a physical device
+- EAS CLI: `npm install -g eas-cli`
+
+---
+
+## First-time setup
 
 ```bash
-npm install --legacy-peer-deps
-npm run start
+# 1. Install dependencies
+npm install
+
+# 2. Copy and fill in environment variables
+cp .env.example .env
 ```
 
-To make things work on your local simulator, or on your phone, you need first to [run `eas build`](https://github.com/infinitered/ignite/blob/master/docs/expo/EAS.md). We have many shortcuts on `package.json` to make it easier:
+Open `.env` and add your Mapbox tokens before running prebuild:
+
+```
+RNMAPBOX_MAPS_DOWNLOAD_TOKEN=sk.ey...   # build-time, Android Maven download
+EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.ey... # runtime, tile requests
+```
 
 ```bash
-npm run build:ios:sim # build for ios simulator
-npm run build:ios:device # build for ios device
-npm run build:ios:prod # build for ios device
+# 3. Generate native projects
+npx expo prebuild
+
+# or clean-rebuild if you already have android/ and ios/:
+npx expo prebuild --clean
 ```
 
-### `./assets`
+---
 
-This directory is designed to organize and store various assets, making it easy for you to manage and use them in your application. The assets are further categorized into subdirectories, including `icons` and `images`:
+## Building the dev client
 
-```tree
-assets
-├── icons
-└── images
+You only need to do this once, or whenever you add/change a native dependency.
+
+### iOS simulator
+
+```bash
+npm run build:ios:sim
 ```
 
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
+This produces a `.tar.gz` containing the `.app`. Extract it and drag it into your simulator, or let EAS install it automatically.
 
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/app/components/Icon.md).
+### iOS physical device
 
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
-
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
-
-How to use your `icon` or `image` assets:
-
-```typescript
-import { Image } from 'react-native';
-
-const MyComponent = () => {
-  return (
-    <Image source={require('assets/images/my_image.png')} />
-  );
-};
+```bash
+npm run build:ios:device
 ```
 
-## Running Maestro end-to-end tests
+Requires a registered device UDID in your Apple Developer account.
 
-Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe.
+### Android emulator / device
 
-## Next Steps
+```bash
+npm run build:android:sim   # emulator (.apk)
+npm run build:android:device # physical device (.apk)
+```
 
-### Ignite Cookbook
+Install the resulting `.apk` via `adb install <file>.apk` or drag it onto a running emulator.
 
-[Ignite Cookbook](https://ignitecookbook.com/) is an easy way for developers to browse and share code snippets (or “recipes”) that actually work.
+---
 
-### Upgrade Ignite boilerplate
+## Running the dev server
 
-Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite) to learn how to upgrade your Ignite project.
+Once the dev client is installed on the target device or simulator:
 
-## Community
+```bash
+npm run start        # Expo dev server (scan QR with the dev client app)
+npm run ios          # start + launch iOS simulator directly
+npm run android      # start + launch Android emulator directly
+```
 
-⭐️ Help us out by [starring on GitHub](https://github.com/infinitered/ignite), filing bug reports in [issues](https://github.com/infinitered/ignite/issues) or [ask questions](https://github.com/infinitered/ignite/discussions).
+The dev server supports fast refresh. Native code changes require a rebuild.
 
-💬 Join us on [Slack](https://join.slack.com/t/infiniteredcommunity/shared_invite/zt-1f137np4h-zPTq_CbaRFUOR_glUFs2UA) to discuss.
+---
 
-📰 Make our Editor-in-chief happy by [reading the React Native Newsletter](https://reactnativenewsletter.com/).
+## Other commands
+
+```bash
+npm run compile      # TypeScript check (no emit)
+npm run lint         # ESLint with auto-fix
+npm run lint:check   # ESLint check only
+npm test             # Jest unit tests
+npm run test:watch   # Jest watch mode
+```
+
+---
+
+## Folder structure
+
+```
+Fairsight/
+├── app/
+│   ├── components/          UI component library
+│   │   ├── report/          Report-specific atoms, molecules, organisms
+│   │   └── chat/            Chat UI components
+│   ├── navigators/          Navigation setup (AppNavigator, tab navigators, types)
+│   ├── screens/             Screen-level components (thin coordinators)
+│   ├── services/
+│   │   └── api/             apisauce client and endpoint functions
+│   ├── queries/             TanStack Query hooks (useReports, useReport, useConversation)
+│   ├── theme/               Color tokens, spacing, typography, theme context
+│   ├── types/               Shared TypeScript types (api.ts)
+│   └── utils/               Small utilities (imageUrl, mapboxStyles, storage)
+├── assets/
+│   ├── icons/               PNG icon set used by the Icon component
+│   └── images/              App icons and static images
+├── docs/                    Architecture decision docs
+├── app.json                 Static Expo config
+├── app.config.ts            Dynamic Expo config (plugins, env vars)
+└── .env.example             Required environment variables
+```
+
+### Component layers
+
+Components in `app/components/report/` follow an atomic hierarchy:
+
+| Layer | Examples |
+|---|---|
+| Atoms | `StatusBadge`, `TypeBadge`, `IssueSeverityBadge`, `ReportThumbnail` |
+| Molecules | `ReportCardHeader`, `WeatherStats`, `LocationMap`, `IssueListItem` |
+| Organisms | `ReportCard`, `ReportListFeed`, `IssuesList`, `ImagesGallery` |
+
+Screens own query state and navigation only; all rendering is delegated to organisms.
+
+---
+
+## Platform differences
+
+| Feature | iOS | Android |
+|---|---|---|
+| Maps | Apple Maps via react-native-maps | Mapbox GL via @rnmapbox/maps |
+| Search | Dedicated bottom tab with floating bar | Inline bar below navigation header |
+| Header blur | System ultra-thin material blur | Solid background |
+| Tab bar | Native UITabBarController | react-native-bottom-tabs |
+| Glass effects | Liquid Glass (iOS 26+) with fallback | Flat fallback |
+
+See [`docs/map-strategy.md`](docs/map-strategy.md) and [`docs/ui-ux.md`](docs/ui-ux.md) for rationale.

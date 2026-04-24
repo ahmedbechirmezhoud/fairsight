@@ -1,47 +1,66 @@
-# Mock API Server
+# Fairsight — API
 
-A simple Express server that serves drone inspection report data.
+Mock API server for the Fairsight mobile app. Serves inspection report data and hosts the AI chat endpoint. Support layer for the mobile evaluation; the goal is minimum viable complexity.
+
+---
 
 ## Setup
 
-### Option 1: Docker (recommended)
-
 ```bash
-cd mock-api
-docker compose up
-```
-
-### Option 2: Node.js
-
-Requires Node.js 16+.
-
-```bash
-cd mock-api
+cp .env.example .env  # add your OPENAI_API_KEY
 npm install
-npm start
+npm start             # http://localhost:3000
 ```
 
-The server runs at `http://localhost:3000` by default.
-
-If port 3000 is already in use, you can specify a different port:
+To use a different port:
 
 ```bash
 PORT=3001 npm start
 ```
 
+---
+
 ## Endpoints
 
-- `GET /api/reports` - List reports (query: `?status=`, `?search=`)
-- `GET /api/reports/:id` - Report details (includes issues array)
-- `GET /api/reports/:id/images` - Images for a report
-- `GET /images/:filename` - Static image files
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/reports` | List reports. Supports `?search=` and `?status=` |
+| GET | `/api/reports/:id` | Single report with full detail |
+| GET | `/api/reports/:id/images` | Images for a report |
+| GET | `/images/:filename` | Static image file |
+| POST | `/api/conversations` | Create a conversation for a report |
+| POST | `/api/conversations/:id/messages` | Send a message, streams response via SSE |
+| GET | `/api/conversations/:id` | Conversation history |
+
+---
 
 ## Data
 
-- **4 inspection reports** with different statuses (completed, in_progress, pending_review)
-- **24 high-resolution drone images** (5472x3648, JPEG)
-- **15 annotated issues** across the reports (critical, warning, info)
-- Report data lives in `data/reports.json`
-- Images live in `images/`
+- 4 inspection reports (completed, in_progress, pending_review)
+- 24 high-resolution drone images
+- 15 annotated issues across reports (critical, warning, info)
+- Report data lives in `data/reports.json`, images in `images/`
 
-See `api-spec.yaml` for the full OpenAPI specification.
+---
+
+## Structure
+
+```
+api/
+├── data/           In-memory report dataset
+├── routes/         Express routers — reports and conversations
+├── services/       AI streaming and system prompt construction
+├── middleware/     Request validation (Zod) and error handling
+├── store/          In-memory conversation state
+├── types/          Shared TypeScript interfaces
+├── config.ts       Environment variable loading
+└── server.ts       Entry point
+```
+
+---
+
+## Notes
+
+- No database. Report data and conversations are in memory and reset on restart.
+- TypeScript runs directly via `tsx`, no build step needed.
+- The chat endpoint streams tokens over SSE; connection stays open until the model finishes.

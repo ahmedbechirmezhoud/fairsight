@@ -1,117 +1,102 @@
-# Mobile Developer - Technical Test
+<img src="Fairsight/assets/images/app-icon-ios.png" width="80" alt="Fairsight" />
 
-## About FairFleet
+# Fairsight
 
-FairFleet is a platform for drone-based inspections. We help clients inspect solar panels, rooftops, facades, and infrastructure using drone imagery and AI-powered analysis.
+React Native drone inspection report viewer. Browse inspection reports, explore sites on a map, and query an AI assistant with full report context — streaming responses over SSE.
 
-## The Challenge
+---
 
-Build a mobile application: **Drone Inspection Report Viewer**
+## Project structure
 
-You have **5 days** from receiving this test. We value quality over completeness - a polished subset is better than a half-finished whole.
-
-## Requirements
-
-### Core (must have)
-
-1. **Report List Screen**
-   - Fetch and display inspection reports from the provided mock API
-   - Show: report title, date, location, status, thumbnail
-   - Search by title or location
-   - Filter by status (completed, in_progress, pending_review)
-
-2. **Report Detail Screen**
-   - Display all report metadata
-   - Show inspection images in a gallery/carousel
-   - Show the inspection location on a map (use the GPS coordinates from the API)
-
-3. **AI Feature** (pick ONE, your choice)
-
-   **Option A - Image Analysis:**
-   Integrate an AI vision model (on-device or cloud) to classify inspection images. Example labels: "damage_detected", "clean", "debris", "crack", "discoloration". Display the classification result on each image.
-
-   **Option B - Chat Assistant:**
-   Add a chat interface where the user can ask questions about a selected report (e.g. "What issues were found?", "Summarize this inspection"). Use an LLM API (Claude, OpenAI, or similar) to generate responses using the report data as context.
-
-   **Option C - Smart Summary:**
-   Auto-generate a natural language summary for each report using an LLM. The summary should describe the inspection findings, highlight any issues, and suggest next steps. Display it prominently on the detail screen.
-
-### Bonus (nice to have, not required)
-
-- Offline support with local caching
-- Pull-to-refresh
-- Map view showing all inspection locations with clustered pins
-- Dark mode
-- Unit tests on core business logic
-- CI/CD pipeline configuration
-- Accessibility support
-
-## Tech Stack
-
-**Your choice.** Pick whatever you're most productive with:
-- Flutter, React Native, SwiftUI, Kotlin/Jetpack Compose, etc.
-
-We care more about your architectural decisions than the specific framework. Be ready to explain why you chose what you chose.
-
-## Mock API
-
-A local mock API server is provided in the `mock-api/` folder.
-
-### Quick start
-
-```bash
-cd mock-api
-
-# Option 1: Docker (recommended)
-docker compose up
-
-# Option 2: Node.js (16+)
-npm install
-npm start
+```
+fairfleet/
+├── Fairsight/   React Native / Expo mobile app
+└── api/         Express mock API server
 ```
 
-**Base URL:** `http://localhost:3000`
+### `Fairsight/`
 
-### Endpoints
+The mobile application. Built with Expo (bare workflow) targeting iOS and Android. Requires a custom dev client — does not run in Expo Go.
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/reports` | List all reports (supports `?status=`, `?search=` query params) |
-| GET | `/api/reports/:id` | Get a single report with full details |
-| GET | `/api/reports/:id/images` | Get images for a report |
-| GET | `/images/:filename` | Serve a static image file |
+### `api/`
 
-See `mock-api/api-spec.yaml` for the full OpenAPI specification.
+A local mock server that provides the report data and hosts the AI chat endpoint. Intended only to support the mobile evaluation; the goal is minimum viable complexity.
 
-## What We Evaluate
+---
 
-| Area | Weight | What we look for |
-|------|--------|-----------------|
-| **Architecture** | 25% | Clean separation of concerns, state management, dependency injection |
-| **AI Integration** | 25% | Thoughtful integration, prompt design, error handling, UX around AI features |
-| **UI/UX** | 20% | Polished, responsive, proper loading/error/empty states |
-| **Code Quality** | 20% | Readable, maintainable, appropriate abstractions (not over-engineered) |
-| **Tech Choices** | 10% | Can you justify your decisions? |
+## Stack
 
-## Deliverables
+### Mobile
 
-1. A **Git repository** (GitHub, GitLab, or Bitbucket) with your code
-2. A **README** in your repo explaining:
-   - How to build and run the app
-   - Your tech stack choices and why
-   - Your approach to the AI feature
-   - What you would improve given more time
-3. A **short screen recording** (2-3 min) demoing the app
+| Concern | Choice |
+|---|---|
+| Framework | React Native 0.83 / Expo SDK 55 |
+| Language | TypeScript (strict) |
+| Navigation | React Navigation v7 — native stack + bottom tabs |
+| Data fetching | TanStack Query v5 |
+| HTTP client | apisauce (axios wrapper) |
+| Maps (iOS) | react-native-maps — Apple Maps, no API key required |
+| Maps (Android) | @rnmapbox/maps — Mapbox GL |
+| AI chat | Streaming SSE over fetch + ReadableStream |
+| Markdown | react-native-markdown-display |
+| Keyboard | react-native-keyboard-controller + Reanimated |
+| Storage | react-native-mmkv |
+| UI extras | @callstack/liquid-glass (iOS 26+) |
 
-## Rules
+### API
 
-- You may use any open-source libraries
-- You may use AI coding assistants for development (we do too)
-- If using a cloud AI API, include setup instructions but do NOT commit API keys
-- Ask questions if anything is unclear - reaching out is a positive signal
+| Concern | Choice |
+|---|---|
+| Runtime | Node.js 18+ |
+| Framework | Express 4 |
+| Language | TypeScript via tsx (no build step) |
+| Validation | Zod v4 |
+| AI | Vercel AI SDK + OpenAI |
+| Streaming | Server-Sent Events |
 
-## Questions?
+---
 
-Reply to the email thread you received this test from. We typically respond within a few hours.
+## Getting started
 
-Good luck!
+### API
+
+```bash
+cd api
+cp .env.example .env   # add your OPENAI_API_KEY
+npm install
+npm start              # http://localhost:3000
+```
+
+### Mobile
+
+```bash
+cd Fairsight
+cp .env.example .env   # add Mapbox tokens
+npm install
+npx expo prebuild      # generates android/ and ios/
+npm run ios            # or npm run android
+```
+
+> Android requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` and optionally `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` in `.env` before prebuild. See `Fairsight/docs/map-strategy.md`.
+
+---
+
+## Demos
+
+<!-- screen recordings and screenshots go here -->
+
+---
+
+## Docs
+
+Detailed rationale for each area lives in the `docs/` folders.
+
+**Mobile** (`Fairsight/docs/`)
+- [`api-layer.md`](Fairsight/docs/api-layer.md) — API layer, types, search, pull to refresh
+- [`ui-ux.md`](Fairsight/docs/ui-ux.md) — component architecture, list, map, native components
+- [`map-strategy.md`](Fairsight/docs/map-strategy.md) — Mapbox / Apple Maps platform split
+- [`chat-sse.md`](Fairsight/docs/chat-sse.md) — SSE streaming, keyboard control, markdown
+
+**API** (`api/docs/`)
+- [`typescript-migration.md`](api/docs/typescript-migration.md) — TypeScript migration rationale
+- [`chat-conversation.md`](api/docs/chat-conversation.md) — conversation model and streaming
