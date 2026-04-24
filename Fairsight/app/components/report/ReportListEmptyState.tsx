@@ -8,9 +8,10 @@ import type { ThemedStyle } from "@/theme/types"
 interface ReportListEmptyStateProps {
   isError: boolean
   onRetry: () => void
+  query?: string
 }
 
-export function ReportListEmptyState({ isError, onRetry }: ReportListEmptyStateProps) {
+export function ReportListEmptyState({ isError, onRetry, query }: ReportListEmptyStateProps) {
   const { themed } = useAppTheme()
 
   if (isError) {
@@ -30,6 +31,19 @@ export function ReportListEmptyState({ isError, onRetry }: ReportListEmptyStateP
         </Text>
         <Text size="xs" weight="semiBold" style={themed($retryLink)} onPress={onRetry}>
           Retry
+        </Text>
+      </View>
+    )
+  }
+
+  if (query) {
+    return (
+      <View style={[$centered, themed($container)]}>
+        <Text size="lg" weight="semiBold" style={themed($title)}>
+          No results for &ldquo;{query}&rdquo;
+        </Text>
+        <Text size="xs" style={themed($message)}>
+          Try a different title or location.
         </Text>
       </View>
     )

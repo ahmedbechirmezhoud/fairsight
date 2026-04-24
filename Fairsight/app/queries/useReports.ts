@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { reportsApi } from "@/services/api/reportsApi"
 import type { GetReportsParams } from "@/services/api/reportsApi"
@@ -9,6 +9,10 @@ export function useReports(params?: GetReportsParams) {
   return useQuery({
     queryKey: queryKeys.reports.list(params),
     queryFn: () => reportsApi.getReports(params),
+    // Keep previous results visible while a new search/filter fetch is in-flight,
+    // so the skeleton only shows on the very first load (isLoading=true, no cache),
+    // not on every query-key change (search typing). isFetching drives the RefreshControl.
+    placeholderData: keepPreviousData,
   })
 }
 

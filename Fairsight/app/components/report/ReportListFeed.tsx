@@ -16,6 +16,7 @@ interface ReportListFeedProps {
   onRefetch: () => void
   onPressReport: (report: ReportSummary) => void
   contentStyle: ViewStyle
+  query?: string
 }
 
 export function ReportListFeed({
@@ -26,6 +27,7 @@ export function ReportListFeed({
   onRefetch,
   onPressReport,
   contentStyle,
+  query,
 }: ReportListFeedProps) {
   const { themed, theme } = useAppTheme()
 
@@ -41,7 +43,9 @@ export function ReportListFeed({
       style={$fill}
       contentContainerStyle={contentStyle}
       ItemSeparatorComponent={() => <View style={themed($separator)} />}
-      ListEmptyComponent={<ReportListEmptyState isError={isError} onRetry={onRefetch} />}
+      ListEmptyComponent={
+        <ReportListEmptyState isError={isError} onRetry={onRefetch} query={query} />
+      }
       accessibilityRole="list"
       accessibilityLabel="Inspection reports"
       keyboardDismissMode="on-drag"

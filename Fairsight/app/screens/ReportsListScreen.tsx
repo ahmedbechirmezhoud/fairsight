@@ -48,6 +48,7 @@ export const ReportsListScreen: FC<ReportsListScreenProps> = function ReportsLis
         onRefetch={refetch}
         onPressReport={handlePressReport}
         contentStyle={listContentStyle}
+        query={trimmed}
       />
     </Screen>
   )
