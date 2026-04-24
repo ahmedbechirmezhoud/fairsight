@@ -8,6 +8,14 @@ FairFleet is a **Drone Inspection Report Viewer** mobile app (technical test). T
 - `Fairsight/` — React Native/Expo mobile app (Ignite v11.5.0 boilerplate)
 - `api/` — Express mock API server
 
+Detailed rationale for every area lives in the docs folders — always check them before making architectural decisions:
+- [`Fairsight/docs/api-layer.md`](Fairsight/docs/api-layer.md) — API layer, types, search, pull to refresh
+- [`Fairsight/docs/ui-ux.md`](Fairsight/docs/ui-ux.md) — component architecture, list, map, native components
+- [`Fairsight/docs/map-strategy.md`](Fairsight/docs/map-strategy.md) — Mapbox / Apple Maps platform split
+- [`Fairsight/docs/chat-sse.md`](Fairsight/docs/chat-sse.md) — SSE streaming, keyboard control, markdown
+- [`api/docs/typescript-migration.md`](api/docs/typescript-migration.md) — TypeScript migration rationale
+- [`api/docs/chat-conversation.md`](api/docs/chat-conversation.md) — conversation model and streaming
+
 ## Commands
 
 **All mobile commands must be run from `Fairsight/`** — the repo root has no `package.json`, so npm will fail if you don't `cd Fairsight/` first.
@@ -44,6 +52,29 @@ docker-compose up         # Docker alternative
 
 ## Architecture
 
+### Atomic Components
+
+Components in `app/components/report/` follow a strict atomic hierarchy. Each layer has a single responsibility:
+
+| Layer | Role |
+|---|---|
+| Atoms | Smallest units; no children components. `StatusBadge`, `IssueSeverityBadge`, `ReportThumbnail` |
+| Molecules | Compose atoms; one focused concern. `ReportCardHeader`, `IssueListItem`, `LocationMap` |
+| Organisms | Compose molecules into a full section. `ReportCard`, `IssuesList`, `ImagesGallery` |
+| Screens | Own query state and navigation only; delegate all rendering to organisms |
+
+Rules: never skip a layer, keep files small, one export per file. See [`Fairsight/docs/ui-ux.md`](Fairsight/docs/ui-ux.md) for full rationale.
+
+### Native UX Philosophy
+
+Prefer the platform's own patterns over cross-platform abstractions:
+- Use `.ios.tsx` / `.android.tsx` extensions to split implementations when platform behaviour differs significantly (maps, search bar placement, blur effects)
+- iOS: Apple Maps, bottom tab search, system blur (`UIBlurEffect`), Liquid Glass (`@callstack/liquid-glass` on iOS 26+)
+- Android: Mapbox GL, inline search bar below header, solid backgrounds
+- Familiar gestures and affordances matter more than pixel-identical cross-platform UI
+
+See [`Fairsight/docs/ui-ux.md`](Fairsight/docs/ui-ux.md) and [`Fairsight/docs/map-strategy.md`](Fairsight/docs/map-strategy.md).
+
 ### Theming
 All styles use the themed style pattern — function receives theme tokens, never hardcode colors/spacing:
 ```typescript
@@ -62,14 +93,11 @@ Access theme in components via `useAppTheme()`. Theme preference persists to MMK
 ### API Layer
 - `app/services/api/` — apisauce (axios wrapper) singleton
 - Base URL from `app/config/` — `config.dev.ts` vs `config.prod.ts`, selected via `__DEV__`
+- See [`Fairsight/docs/api-layer.md`](Fairsight/docs/api-layer.md) for query patterns, types, search, and pull-to-refresh.
 
 ### Storage
 - MMKV via `app/utils/storage/` — typed `load<T>()` / `save()` abstraction
-- Used for: theme preference, navigation state, i18n language
-
-### i18n
-- i18next, 7 languages (en, ar, es, fr, hi, ja, ko), RTL-aware for Arabic
-- Translation keys typed — never use raw strings in UI
+- Used for: theme preference, navigation state
 
 ### Component Library
 Pre-built components in `app/components/`: `Screen`, `Button`, `Text`, `TextField`, `Card`, `ListItem`, `Header`, `EmptyState`, `Toggle`, `AutoImage`, `Icon`. Use these instead of raw RN primitives.
