@@ -83,6 +83,18 @@ npm run ios            # or npm run android
 
 ## Demos
 
+
+### Environment
+
+Screenshots and recordings were captured on the following setup:
+
+| | |
+|---|---|
+| **Machine** | MacBook Air (M1) — 8 GB RAM |
+| **macOS** | 26.3.1 (Build 25D2128) |
+| **iOS simulator** | iPhone 16e — iOS 26.3.1 |
+| **Android emulator** | Medium Phone (Generic, arm64-v8a) — Android API 37 (Google APIs) |
+
 ### iOS
 
 **Light mode — report list & detail**
